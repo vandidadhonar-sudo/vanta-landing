@@ -4,23 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>وانتا | مینی‌اپ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:        #0B0C10;
-      --bg2:       #111318;
-      --bg3:       #1A1B22;
-      --gold:      #C5A059;
-      --gold-dim:  #8a6f3a;
-      --gold-glow: rgba(197,160,89,0.15);
-      --text:      #D4D5D8;
-      --text-dim:  #7a7b80;
-      --border:    rgba(197,160,89,0.18);
-      --green:     #4caf50;
-      --red:       #ef5350;
-      --blue:      #42a5f5;
-      --radius:    12px;
-      --nav-h:     60px;
+      /* Warm charcoal base — friendlier than pure black */
+      --bg:        #16130F;
+      --bg2:       #1F1B15;
+      --bg3:       #2A241C;
+      --bg-soft:   #332B20;
+      /* Warm amber gold — softer, friendlier than metallic gold */
+      --gold:      #E0A85C;
+      --gold-warm: #F2B563;
+      --gold-dim:  #9c7a44;
+      --gold-glow: rgba(224,168,92,0.18);
+      --cream:     #F5EDDF;
+      --text:      #E8DECB;
+      --text-dim:  #9a9082;
+      --border:    rgba(224,168,92,0.16);
+      --green:     #6BBF6E;
+      --red:       #E8736A;
+      --blue:      #6BAEE8;
+      --warm-rose: #D98C7A;
+      --radius:    20px;
+      --radius-sm: 14px;
+      --nav-h:     66px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -34,486 +41,346 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      background-image:
+        radial-gradient(circle at 15% 0%, rgba(224,168,92,0.07), transparent 40%),
+        radial-gradient(circle at 85% 100%, rgba(217,140,122,0.05), transparent 40%);
     }
 
     /* ── TOP BAR ── */
     .topbar {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
+      padding: 14px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      min-height: 52px;
     }
     .topbar-logo {
-      font-size: 18px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #F3A511 0%, #C5A059 60%, #F3A511 100%);
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #F2B563 0%, #E0A85C 50%, #D98C7A 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
     }
-    .topbar-sub {
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-    }
+    .topbar-sub { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-top: 1px; }
     .topbar-pin-btn {
-      background: var(--bg3);
+      background: var(--bg2);
       border: 1px solid var(--border);
       color: var(--gold);
       font-family: 'Vazirmatn', sans-serif;
       font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 20px;
+      padding: 7px 14px;
+      border-radius: 22px;
       cursor: pointer;
-      transition: all .2s;
+      transition: all .25s;
+      font-weight: 500;
     }
-    .topbar-pin-btn:hover { background: var(--gold); color: #000; }
+    .topbar-pin-btn:active { background: var(--gold); color: #16130F; transform: scale(0.96); }
 
     /* ── PAGES ── */
-    .pages {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
+    .pages { flex: 1; overflow: hidden; position: relative; }
     .page {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       overflow-y: auto;
-      padding: 14px 14px calc(var(--nav-h) + 14px);
+      padding: 6px 16px calc(var(--nav-h) + 16px);
       display: none;
       -webkit-overflow-scrolling: touch;
+      animation: fadeIn .35s ease;
     }
     .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ── BOTTOM NAV ── */
     .nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
+      position: fixed; bottom: 0; left: 0; right: 0;
       height: var(--nav-h);
-      background: var(--bg2);
+      background: rgba(31,27,21,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--border);
       display: flex;
       z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom, 0);
     }
     .nav-item {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: all .2s;
-      position: relative;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px; cursor: pointer;
+      transition: all .25s; position: relative;
     }
-    .nav-item .icon { font-size: 20px; transition: all .2s; }
-    .nav-item .label { font-size: 10px; color: var(--text-dim); transition: all .2s; }
-    .nav-item.active .icon { transform: scale(1.15); }
-    .nav-item.active .label { color: var(--gold); }
+    .nav-item .icon {
+      font-size: 22px; transition: all .3s cubic-bezier(.34,1.56,.64,1);
+      filter: grayscale(0.4) opacity(0.6);
+    }
+    .nav-item .label { font-size: 10px; color: var(--text-dim); transition: all .25s; }
+    .nav-item.active .icon { transform: translateY(-3px) scale(1.2); filter: grayscale(0) opacity(1); }
+    .nav-item.active .label { color: var(--gold); font-weight: 600; }
     .nav-item::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 25%; right: 25%;
-      height: 2px;
-      background: var(--gold);
-      border-radius: 2px 2px 0 0;
-      transform: scaleX(0);
-      transition: transform .2s;
+      content: ''; position: absolute; top: 0; left: 30%; right: 30%;
+      height: 3px; background: linear-gradient(90deg, var(--gold), var(--warm-rose));
+      border-radius: 0 0 3px 3px; transform: scaleX(0); transition: transform .3s;
     }
     .nav-item.active::after { transform: scaleX(1); }
     .badge {
-      position: absolute;
-      top: 6px; right: 20%;
-      background: var(--red);
-      color: #fff;
-      font-size: 9px;
-      width: 16px; height: 16px;
-      border-radius: 50%;
+      position: absolute; top: 8px; right: 22%;
+      background: var(--red); color: #fff;
+      font-size: 9px; min-width: 17px; height: 17px; padding: 0 4px;
+      border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
+      font-weight: 700; box-shadow: 0 0 0 2px var(--bg2);
     }
 
     /* ── SECTION HEADERS ── */
     .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 14px; font-weight: 700; color: var(--cream);
+      margin: 14px 2px 14px; display: flex; align-items: center; gap: 9px;
     }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+    .section-title .emoji { font-size: 17px; }
+    .section-title .count {
+      font-size: 11px; color: var(--gold); background: var(--gold-glow);
+      padding: 2px 10px; border-radius: 10px; font-weight: 600;
     }
 
     /* ── SEARCH BAR ── */
-    .search-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
+    .search-bar { display: flex; gap: 9px; margin: 8px 0 14px; }
     .search-input {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 13px;
-      padding: 9px 14px;
-      outline: none;
-      transition: border .2s;
+      flex: 1; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      font-family: 'Vazirmatn', sans-serif; font-size: 13px;
+      padding: 12px 16px; outline: none; transition: all .25s;
     }
     .search-input::placeholder { color: var(--text-dim); }
-    .search-input:focus { border-color: var(--gold); }
+    .search-input:focus { border-color: var(--gold); background: var(--bg3); }
     .filter-btn {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--gold);
-      font-size: 18px;
-      width: 40px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all .2s;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--gold); font-size: 18px; width: 46px;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all .25s;
     }
-    .filter-btn:hover { background: var(--gold-glow); }
+    .filter-btn:active { background: var(--gold-glow); transform: scale(0.95); }
 
     /* ── FILTER CHIPS ── */
     .chips {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 14px;
-      scrollbar-width: none;
+      display: flex; gap: 8px; overflow-x: auto;
+      padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: none;
     }
     .chips::-webkit-scrollbar { display: none; }
     .chip {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 11px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all .2s;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text-dim); font-family: 'Vazirmatn', sans-serif;
+      font-size: 12px; padding: 8px 15px; border-radius: 22px;
+      cursor: pointer; white-space: nowrap; transition: all .25s; font-weight: 500;
     }
-    .chip.active, .chip:hover { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+    .chip.active {
+      background: linear-gradient(135deg, var(--gold-warm), var(--gold));
+      color: #16130F; border-color: transparent; font-weight: 700;
+      box-shadow: 0 4px 14px var(--gold-glow);
+    }
+    .chip:active { transform: scale(0.95); }
 
-    /* ── PROPERTY CARD ── */
+    /* ── GALLERY PROPERTY CARD ── */
     .card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all .2s;
-      position: relative;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); margin-bottom: 16px; overflow: hidden;
+      cursor: pointer; transition: all .3s; position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
-    .card:hover { border-color: var(--gold-dim); box-shadow: 0 4px 20px var(--gold-glow); transform: translateY(-1px); }
-    .card-top {
-      padding: 12px 14px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
+    .card:active { transform: scale(0.985); }
+    /* Big image area — gradient placeholder until real photos arrive */
+    .card-image {
+      height: 180px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
     }
-    .card-id { font-size: 10px; color: var(--text-dim); }
-    .card-type-badge {
-      font-size: 10px;
-      padding: 2px 9px;
-      border-radius: 10px;
-      font-weight: 700;
+    .card-image .ph-icon { font-size: 56px; opacity: 0.55; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+    .card-image .ph-zone {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 28px 14px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+      font-size: 13px; font-weight: 600; color: #fff;
+      display: flex; align-items: center; gap: 5px;
     }
-    .badge-forsale { background: rgba(197,160,89,.2); color: var(--gold); }
-    .badge-rent { background: rgba(66,165,245,.18); color: var(--blue); }
-    .badge-hot { background: rgba(239,83,80,.2); color: var(--red); }
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #eee;
-      padding: 0 14px 6px;
+    /* per-type warm gradients */
+    .grad-apt   { background: linear-gradient(135deg, #4A3F2E, #6B5638, #8A6E44); }
+    .grad-villa { background: linear-gradient(135deg, #3E4A2E, #5A6B38, #7A8A44); }
+    .grad-land  { background: linear-gradient(135deg, #4A3A2E, #6B5238, #8A6044); }
+    .grad-shop  { background: linear-gradient(135deg, #3E2E4A, #56386B, #6E448A); }
+    .grad-comm  { background: linear-gradient(135deg, #2E3E4A, #38566B, #44748A); }
+
+    .card-badges-top {
+      position: absolute; top: 12px; right: 12px; left: 12px;
+      display: flex; justify-content: space-between; align-items: flex-start;
     }
-    .card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 0 14px 10px;
+    .pill-badge {
+      font-size: 11px; padding: 5px 12px; border-radius: 14px;
+      font-weight: 700; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     }
+    .badge-forsale { background: rgba(224,168,92,0.85); color: #16130F; }
+    .badge-rent { background: rgba(107,174,232,0.85); color: #16130F; }
+    .badge-hot {
+      background: rgba(232,115,106,0.92); color: #fff;
+      display: flex; align-items: center; gap: 4px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .badge-id { background: rgba(0,0,0,0.45); color: #fff; font-weight: 500; backdrop-filter: blur(8px); }
+
+    .card-body { padding: 14px 16px 16px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--cream); margin-bottom: 10px; }
+    .card-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
     .meta-pill {
-      background: var(--bg3);
-      color: var(--text-dim);
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      background: var(--bg3); color: var(--text-dim); font-size: 11px;
+      padding: 5px 11px; border-radius: 12px; display: flex; align-items: center; gap: 5px;
     }
-    .meta-pill span { color: var(--text); font-weight: 500; }
-    .card-price {
-      border-top: 1px solid var(--border);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .meta-pill b { color: var(--text); font-weight: 600; }
+    .card-footer { display: flex; align-items: flex-end; justify-content: space-between; }
+    .price-main { font-size: 18px; font-weight: 800; color: var(--gold); }
+    .price-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .card-arrow {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--gold-glow); color: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; transition: all .25s;
     }
-    .price-main {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--gold);
-    }
-    .price-sub { font-size: 11px; color: var(--text-dim); }
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      padding: 0 14px 12px;
-    }
-    .btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all .2s;
-    }
-    .btn-gold { background: var(--gold); color: #000; }
-    .btn-gold:hover { background: #F3A511; }
-    .btn-ghost { background: var(--bg3); color: var(--gold); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: var(--gold-glow); }
-    .hot-ribbon {
-      position: absolute;
-      top: 0; left: 0;
-      background: var(--red);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 0 0 10px 0;
-    }
+    .card:active .card-arrow { background: var(--gold); color: #16130F; }
 
     /* ── STATS BAR ── */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+    .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; margin: 8px 0 16px; }
     .stat-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px;
-      text-align: center;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 16px 10px; text-align: center;
     }
-    .stat-num {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--gold);
-    }
-    .stat-label { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+    .stat-num { font-size: 26px; font-weight: 800; color: var(--gold); }
+    .stat-label { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
 
     /* ── LEAD ROW ── */
     .lead-row {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: all .2s;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 13px 15px; margin-bottom: 11px;
+      display: flex; align-items: center; gap: 13px; cursor: pointer; transition: all .25s;
     }
-    .lead-row:hover { border-color: var(--gold-dim); }
+    .lead-row:active { transform: scale(0.98); background: var(--bg3); }
     .lead-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
+      width: 46px; height: 46px; border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
+      font-size: 20px; flex-shrink: 0;
     }
-    .avatar-hot { background: rgba(239,83,80,.2); }
-    .avatar-warm { background: rgba(255,167,38,.2); }
-    .avatar-cold { background: rgba(97,97,97,.2); }
+    .avatar-hot { background: rgba(232,115,106,0.18); }
+    .avatar-warm { background: rgba(242,181,99,0.18); }
+    .avatar-cold { background: rgba(107,174,232,0.15); }
     .lead-info { flex: 1; min-width: 0; }
-    .lead-name { font-weight: 600; color: #eee; font-size: 13px; }
-    .lead-detail { font-size: 11px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .lead-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .score-badge {
-      font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 8px;
-    }
-    .score-hot { background: rgba(239,83,80,.2); color: var(--red); }
-    .score-warm { background: rgba(255,167,38,.2); color: #FFA726; }
-    .score-cold { background: rgba(97,97,97,.2); color: #aaa; }
+    .lead-name { font-weight: 700; color: var(--cream); font-size: 14px; }
+    .lead-detail { font-size: 11px; color: var(--text-dim); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lead-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+    .score-badge { font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 10px; }
+    .score-hot { background: rgba(232,115,106,0.18); color: var(--red); }
+    .score-warm { background: rgba(242,181,99,0.18); color: var(--gold); }
+    .score-cold { background: rgba(107,174,232,0.15); color: var(--blue); }
     .lead-time { font-size: 10px; color: var(--text-dim); }
 
     /* ── FILING FORM ── */
-    .form-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .form-row { margin-bottom: 12px; }
-    .form-label { font-size: 11px; color: var(--gold); margin-bottom: 5px; display: block; letter-spacing: .5px; }
+    .form-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+    .form-row { margin-bottom: 14px; }
+    .form-label { font-size: 11px; color: var(--gold); margin-bottom: 6px; display: block; font-weight: 600; }
     .form-input, .form-select {
-      width: 100%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 13px;
-      padding: 9px 12px;
-      outline: none;
-      transition: border .2s;
+      width: 100%; background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      font-family: 'Vazirmatn', sans-serif; font-size: 13px;
+      padding: 11px 14px; outline: none; transition: border .25s;
     }
     .form-input:focus, .form-select:focus { border-color: var(--gold); }
     .form-select { appearance: none; cursor: pointer; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn-submit {
-      width: 100%;
-      background: linear-gradient(135deg, #F3A511, #C5A059);
-      color: #000;
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 12px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all .2s;
-      margin-top: 4px;
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    /* Photo upload zone */
+    .photo-upload {
+      border: 2px dashed var(--border); border-radius: var(--radius-sm);
+      padding: 24px; text-align: center; cursor: pointer; transition: all .25s;
+      background: var(--bg3);
     }
-    .btn-submit:hover { opacity: .9; transform: translateY(-1px); }
-    .btn-submit:active { transform: translateY(0); }
+    .photo-upload:active { border-color: var(--gold); background: var(--bg-soft); }
+    .photo-upload .pu-icon { font-size: 34px; opacity: 0.6; }
+    .photo-upload .pu-text { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+    .btn-submit {
+      width: 100%; background: linear-gradient(135deg, var(--gold-warm), var(--gold), var(--warm-rose));
+      color: #16130F; font-family: 'Vazirmatn', sans-serif; font-size: 15px; font-weight: 800;
+      padding: 14px; border: none; border-radius: var(--radius-sm); cursor: pointer;
+      transition: all .25s; margin-top: 6px;
+    }
+    .btn-submit:active { transform: scale(0.98); }
 
     /* ── LOCK SCREEN ── */
-    .lock-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 300px;
-      padding: 24px;
-      text-align: center;
-    }
-    .lock-icon { font-size: 52px; margin-bottom: 16px; opacity: .7; }
-    .lock-title { font-size: 17px; font-weight: 700; color: #eee; margin-bottom: 6px; }
-    .lock-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.7; }
-    .pin-dots { display: flex; gap: 10px; margin-bottom: 24px; justify-content: center; }
-    .pin-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border: 2px solid var(--gold-dim);
-      background: transparent;
-      transition: all .2s;
-    }
-    .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
-    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 220px; }
-    .pin-key {
-      background: var(--bg3);
+    .lock-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 24px; text-align: center; }
+    .lock-icon {
+      font-size: 54px; margin-bottom: 18px;
+      width: 96px; height: 96px; border-radius: 30px;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
       border: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 18px;
-      font-weight: 500;
-      padding: 14px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all .15s;
-      text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
-    .pin-key:active { background: var(--gold-glow); border-color: var(--gold); transform: scale(.95); }
-    .pin-key.delete { color: var(--red); font-size: 14px; }
-    .pin-error { color: var(--red); font-size: 12px; margin-top: 10px; min-height: 18px; }
+    .lock-title { font-size: 18px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
+    .lock-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 26px; line-height: 1.8; }
+    .pin-dots { display: flex; gap: 12px; margin-bottom: 28px; justify-content: center; }
+    .pin-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--gold-dim); background: transparent; transition: all .25s; }
+    .pin-dot.filled { background: var(--gold); border-color: var(--gold); transform: scale(1.15); }
+    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 240px; }
+    .pin-key {
+      background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+      font-family: 'Vazirmatn', sans-serif; font-size: 20px; font-weight: 500;
+      padding: 16px; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; text-align: center;
+    }
+    .pin-key:active { background: var(--gold-glow); border-color: var(--gold); transform: scale(0.92); }
+    .pin-key.delete { color: var(--red); font-size: 16px; }
+    .pin-error { color: var(--red); font-size: 12px; margin-top: 12px; min-height: 18px; }
 
     /* ── MODAL ── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      z-index: 200;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius) var(--radius) 0 0;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px 18px;
-      max-height: 85dvh;
-      overflow-y: auto;
-      animation: slideUp .3s ease;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 480px;
+      max-height: 90dvh; overflow-y: auto; animation: slideUp .35s cubic-bezier(.34,1.2,.64,1);
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
-    .modal-title { font-size: 16px; font-weight: 700; color: #eee; margin-bottom: 14px; }
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg3); }
-    .detail-key { color: var(--text-dim); font-size: 12px; }
-    .detail-val { color: var(--text); font-size: 12px; font-weight: 500; text-align: left; }
-    .btn-chat {
-      width: 100%;
-      background: linear-gradient(135deg, #F3A511, #C5A059);
-      color: #000;
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 13px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      margin-top: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    /* Gallery in modal */
+    .modal-gallery { height: 220px; position: relative; display: flex; align-items: center; justify-content: center; }
+    .modal-gallery .ph-icon { font-size: 70px; opacity: 0.5; }
+    .modal-gallery .gal-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+    .gal-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+    .gal-dot.active { background: #fff; width: 18px; border-radius: 4px; }
+    .modal-close-x {
+      position: absolute; top: 14px; left: 14px; width: 34px; height: 34px;
+      border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+      color: #fff; border: none; font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
+    .modal-pad { padding: 18px; }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--cream); margin-bottom: 16px; }
+    .detail-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--bg3); }
+    .detail-key { color: var(--text-dim); font-size: 12px; }
+    .detail-val { color: var(--text); font-size: 12px; font-weight: 600; text-align: left; }
+    .btn-chat {
+      width: 100%; background: linear-gradient(135deg, var(--gold-warm), var(--gold), var(--warm-rose));
+      color: #16130F; font-family: 'Vazirmatn', sans-serif; font-size: 15px; font-weight: 800;
+      padding: 14px; border: none; border-radius: var(--radius-sm); cursor: pointer; margin-top: 18px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-chat:active { transform: scale(0.98); }
 
     /* ── EMPTY STATE ── */
-    .empty { text-align: center; padding: 40px 20px; color: var(--text-dim); }
-    .empty-icon { font-size: 40px; margin-bottom: 10px; opacity: .5; }
+    .empty { text-align: center; padding: 50px 20px; color: var(--text-dim); }
+    .empty-icon { font-size: 44px; margin-bottom: 12px; opacity: 0.5; }
 
     /* ── TOAST ── */
     .toast {
-      position: fixed;
-      top: 60px; left: 50%; transform: translateX(-50%);
-      background: var(--bg3);
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-size: 13px;
-      padding: 10px 20px;
-      border-radius: 20px;
-      z-index: 300;
-      opacity: 0;
-      transition: opacity .3s;
-      pointer-events: none;
-      white-space: nowrap;
+      position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-10px);
+      background: var(--bg-soft); border: 1px solid var(--gold); color: var(--gold);
+      font-size: 13px; font-weight: 500; padding: 12px 22px; border-radius: 24px;
+      z-index: 300; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     }
-    .toast.show { opacity: 1; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── SCROLL BAR ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -525,12 +392,11 @@
 <div class="topbar">
   <div>
     <div class="topbar-logo">VANTA</div>
-    <div class="topbar-sub">پیام‌رسان بله</div>
+    <div class="topbar-sub">مشاور هوشمند املاک · بله</div>
   </div>
   <button class="topbar-pin-btn" onclick="showAdminHint()">🔐 ورود مشاور</button>
 </div>
 
-<!-- PAGES -->
 <div class="pages">
 
   <!-- ─────── PAGE 1: CATALOG ─────── -->
@@ -539,17 +405,15 @@
       <input class="search-input" type="search" placeholder="جستجو در ملک‌ها..." id="search-input" oninput="filterCards()">
       <button class="filter-btn" onclick="toggleFilters()">⚙️</button>
     </div>
-
     <div class="chips" id="chips">
-      <button class="chip active" data-filter="all" onclick="setFilter(this,'all')">همه</button>
-      <button class="chip" data-filter="فروش" onclick="setFilter(this,'فروش')">فروش</button>
-      <button class="chip" data-filter="اجاره" onclick="setFilter(this,'اجاره')">اجاره</button>
-      <button class="chip" data-filter="آپارتمان" onclick="setFilter(this,'آپارتمان')">آپارتمان</button>
-      <button class="chip" data-filter="ویلا" onclick="setFilter(this,'ویلا')">ویلا</button>
-      <button class="chip" data-filter="تجاری" onclick="setFilter(this,'تجاری')">تجاری</button>
-      <button class="chip" data-filter="hot" onclick="setFilter(this,'hot')">🔥 فرصت ویژه</button>
+      <button class="chip active" onclick="setFilter(this,'all')">همه</button>
+      <button class="chip" onclick="setFilter(this,'فروش')">فروش</button>
+      <button class="chip" onclick="setFilter(this,'اجاره')">اجاره</button>
+      <button class="chip" onclick="setFilter(this,'آپارتمان')">آپارتمان</button>
+      <button class="chip" onclick="setFilter(this,'ویلا')">ویلا</button>
+      <button class="chip" onclick="setFilter(this,'مغازه')">تجاری</button>
+      <button class="chip" onclick="setFilter(this,'hot')">🔥 فرصت ویژه</button>
     </div>
-
     <div id="cards-container"></div>
   </div>
 
@@ -559,12 +423,10 @@
       <div class="lock-screen">
         <div class="lock-icon">🗂️</div>
         <div class="lock-title">پنل ثبت فایل</div>
-        <div class="lock-sub">این بخش مخصوص مشاورین وانتا است.<br>PIN چهاررقمی خود را وارد کنید.</div>
+        <div class="lock-sub">مخصوص مشاورین وانتا<br>PIN چهاررقمی را وارد کنید</div>
         <div class="pin-dots" id="filing-dots">
-          <div class="pin-dot" id="fd0"></div>
-          <div class="pin-dot" id="fd1"></div>
-          <div class="pin-dot" id="fd2"></div>
-          <div class="pin-dot" id="fd3"></div>
+          <div class="pin-dot" id="fd0"></div><div class="pin-dot" id="fd1"></div>
+          <div class="pin-dot" id="fd2"></div><div class="pin-dot" id="fd3"></div>
         </div>
         <div class="pin-pad">
           <button class="pin-key" onclick="pinKey('filing',1)">۱</button>
@@ -583,90 +445,47 @@
         <div class="pin-error" id="filing-err"></div>
       </div>
     </div>
-
     <div id="filing-content" style="display:none">
-      <div class="section-title">📥 ثبت فایل جدید</div>
+      <div class="section-title"><span class="emoji">📥</span> ثبت فایل جدید</div>
       <div class="form-card">
-        <div class="form-grid">
-          <div class="form-row">
-            <label class="form-label">نوع معامله</label>
-            <select class="form-select">
-              <option>فروش</option><option>اجاره</option><option>رهن</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label class="form-label">نوع ملک</label>
-            <select class="form-select">
-              <option>آپارتمان</option><option>ویلا</option><option>زمین</option>
-              <option>تجاری</option><option>مغازه</option>
-            </select>
-          </div>
-        </div>
         <div class="form-row">
-          <label class="form-label">آدرس کامل</label>
-          <input class="form-input" type="text" placeholder="شیراز.شهرک بهشتی.خیابان...">
-        </div>
-        <div class="form-grid">
-          <div class="form-row">
-            <label class="form-label">متراژ (م²)</label>
-            <input class="form-input" type="number" placeholder="۱۲۰">
-          </div>
-          <div class="form-row">
-            <label class="form-label">تعداد خواب</label>
-            <input class="form-input" type="number" placeholder="۳">
+          <label class="form-label">عکس‌های ملک</label>
+          <div class="photo-upload" onclick="showToast('📷 آپلود عکس — در نسخه نهایی فعال می‌شود')">
+            <div class="pu-icon">📷</div>
+            <div class="pu-text">برای افزودن عکس بزنید<br>(تا ۵ عکس)</div>
           </div>
         </div>
         <div class="form-grid">
-          <div class="form-row">
-            <label class="form-label">طبقه</label>
-            <input class="form-input" type="number" placeholder="۲">
-          </div>
-          <div class="form-row">
-            <label class="form-label">سال ساخت</label>
-            <input class="form-input" type="number" placeholder="۱۴۰۱">
-          </div>
+          <div class="form-row"><label class="form-label">نوع معامله</label>
+            <select class="form-select"><option>فروش</option><option>اجاره</option><option>رهن</option></select></div>
+          <div class="form-row"><label class="form-label">نوع ملک</label>
+            <select class="form-select"><option>آپارتمان</option><option>ویلا</option><option>زمین</option><option>تجاری</option><option>مغازه</option></select></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">قیمت / قیمت متری (تومان)</label>
-          <input class="form-input" type="text" placeholder="مثال: ۵،۰۰۰،۰۰۰،۰۰۰">
+        <div class="form-row"><label class="form-label">آدرس کامل</label>
+          <input class="form-input" type="text" placeholder="شیراز.شهرک بهشتی.خیابان..."></div>
+        <div class="form-grid">
+          <div class="form-row"><label class="form-label">متراژ (م²)</label><input class="form-input" type="number" placeholder="۱۲۰"></div>
+          <div class="form-row"><label class="form-label">تعداد خواب</label><input class="form-input" type="number" placeholder="۳"></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">نام مالک</label>
-          <input class="form-input" type="text" placeholder="محرمانه — فقط مشاوران">
+        <div class="form-grid">
+          <div class="form-row"><label class="form-label">طبقه</label><input class="form-input" type="number" placeholder="۲"></div>
+          <div class="form-row"><label class="form-label">سال ساخت</label><input class="form-input" type="number" placeholder="۱۴۰۱"></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">شماره مالک</label>
-          <input class="form-input" type="tel" placeholder="۰۹۱۲...">
+        <div class="form-row"><label class="form-label">قیمت / قیمت متری (تومان)</label><input class="form-input" type="text" placeholder="۵،۰۰۰،۰۰۰،۰۰۰"></div>
+        <div class="form-row"><label class="form-label">نام مالک <span style="color:var(--text-dim)">(محرمانه)</span></label><input class="form-input" type="text" placeholder="فقط مشاوران می‌بینند"></div>
+        <div class="form-row"><label class="form-label">شماره مالک <span style="color:var(--text-dim)">(محرمانه)</span></label><input class="form-input" type="tel" placeholder="۰۹۱۲..."></div>
+        <div class="form-grid">
+          <div class="form-row"><label class="form-label">نوع سند</label>
+            <select class="form-select"><option>شش‌دانگ</option><option>تک‌برگ</option><option>مشاع</option><option>وکالتی</option></select></div>
+          <div class="form-row"><label class="form-label">جهت</label>
+            <select class="form-select"><option>شمالی</option><option>جنوبی</option><option>شرقی</option><option>غربی</option><option>دوبر</option></select></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">نوع سند</label>
-          <select class="form-select">
-            <option>شش‌دانگ</option><option>تک‌برگ</option><option>مشاع</option>
-            <option>وکالتی</option><option>سند نداره</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label class="form-label">جهت</label>
-          <select class="form-select">
-            <option>شمالی</option><option>جنوبی</option><option>شرقی</option>
-            <option>غربی</option><option>دو‌بر</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label class="form-label">امتیاز فروش</label>
-          <select class="form-select">
-            <option value="">عادی</option>
-            <option value="hot">🔥 فرصت ویژه (Hot)</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label class="form-label">توضیحات</label>
-          <input class="form-input" type="text" placeholder="نکات مهم...">
-        </div>
-        <button class="btn-submit" onclick="submitFile()">✅ ثبت فایل در وانتا فایلینگ</button>
+        <div class="form-row"><label class="form-label">امتیاز فروش</label>
+          <select class="form-select"><option value="">عادی</option><option value="hot">🔥 فرصت ویژه (Hot)</option></select></div>
+        <div class="form-row"><label class="form-label">توضیحات</label><input class="form-input" type="text" placeholder="نکات مهم..."></div>
+        <button class="btn-submit" onclick="submitFile()">✅ ثبت در وانتا فایلینگ</button>
       </div>
-
-      <div class="section-title">📋 آخرین فایل‌های ثبت‌شده</div>
+      <div class="section-title"><span class="emoji">📋</span> آخرین فایل‌ها</div>
       <div id="filed-list"></div>
     </div>
   </div>
@@ -677,12 +496,10 @@
       <div class="lock-screen">
         <div class="lock-icon">👥</div>
         <div class="lock-title">داشبورد لیدها</div>
-        <div class="lock-sub">این بخش مخصوص سرپرست وانتا است.<br>PIN چهاررقمی را وارد کنید.</div>
+        <div class="lock-sub">مخصوص سرپرست وانتا<br>PIN چهاررقمی را وارد کنید</div>
         <div class="pin-dots" id="leads-dots">
-          <div class="pin-dot" id="ld0"></div>
-          <div class="pin-dot" id="ld1"></div>
-          <div class="pin-dot" id="ld2"></div>
-          <div class="pin-dot" id="ld3"></div>
+          <div class="pin-dot" id="ld0"></div><div class="pin-dot" id="ld1"></div>
+          <div class="pin-dot" id="ld2"></div><div class="pin-dot" id="ld3"></div>
         </div>
         <div class="pin-pad">
           <button class="pin-key" onclick="pinKey('leads',1)">۱</button>
@@ -701,31 +518,19 @@
         <div class="pin-error" id="leads-err"></div>
       </div>
     </div>
-
     <div id="leads-content" style="display:none">
       <div class="stats-bar">
-        <div class="stat-card">
-          <div class="stat-num" id="stat-total">۲۴</div>
-          <div class="stat-label">کل لید</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" style="color:var(--red)" id="stat-hot">۷</div>
-          <div class="stat-label">🔥 داغ</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" style="color:var(--green)" id="stat-today">۳</div>
-          <div class="stat-label">امروز</div>
-        </div>
+        <div class="stat-card"><div class="stat-num">۲۴</div><div class="stat-label">کل لید</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--red)">۷</div><div class="stat-label">🔥 داغ</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--green)">۳</div><div class="stat-label">امروز</div></div>
       </div>
-
       <div class="chips">
         <button class="chip active" onclick="setLeadFilter(this,'all')">همه</button>
         <button class="chip" onclick="setLeadFilter(this,'hot')">🔥 داغ</button>
-        <button class="chip" onclick="setLeadFilter(this,'warm')">🟡 گرم</button>
+        <button class="chip" onclick="setLeadFilter(this,'warm')">🌡️ گرم</button>
         <button class="chip" onclick="setLeadFilter(this,'cold')">❄️ سرد</button>
       </div>
-
-      <div class="section-title">📊 لیست مشتریان</div>
+      <div class="section-title"><span class="emoji">📊</span> لیست مشتریان</div>
       <div id="leads-list"></div>
     </div>
   </div>
@@ -735,106 +540,64 @@
 <!-- BOTTOM NAV -->
 <nav class="nav">
   <div class="nav-item active" id="nav-catalog" onclick="switchPage('catalog')">
-    <div class="icon">🏠</div>
-    <div class="label">ملک‌ها</div>
-  </div>
+    <div class="icon">🏡</div><div class="label">ملک‌ها</div></div>
   <div class="nav-item" id="nav-filing" onclick="switchPage('filing')">
-    <div class="icon">📁</div>
-    <div class="label">فایلینگ</div>
-  </div>
+    <div class="icon">📁</div><div class="label">فایلینگ</div></div>
   <div class="nav-item" id="nav-leads" onclick="switchPage('leads')">
-    <div class="icon">👥</div>
-    <div class="label">لیدها</div>
-    <div class="badge" id="hot-badge">۷</div>
-  </div>
+    <div class="icon">👥</div><div class="label">لیدها</div><div class="badge">۷</div></div>
 </nav>
 
 <!-- PROPERTY DETAIL MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal" id="modal-content">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="modal-title"></div>
-    <div id="modal-body"></div>
-    <button class="btn-chat" onclick="startChat()">
-      💬 صحبت با وانتا سیلز
-    </button>
+    <div class="modal-gallery" id="modal-gallery">
+      <button class="modal-close-x" onclick="forceCloseModal()">✕</button>
+      <div class="ph-icon" id="modal-ph">🏡</div>
+      <div class="gal-dots"><div class="gal-dot active"></div><div class="gal-dot"></div><div class="gal-dot"></div></div>
+    </div>
+    <div class="modal-pad">
+      <div class="modal-title" id="modal-title"></div>
+      <div id="modal-body"></div>
+      <button class="btn-chat" onclick="startChat()">💬 صحبت با وانتا سیلز</button>
+    </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════
-// BALE WEBAPP INTEGRATION
-// ══════════════════════════════════════
 const BaleApp = window.Bale?.WebApp || window.Telegram?.WebApp || null;
-if (BaleApp) {
-  BaleApp.ready();
-  BaleApp.expand();
-}
+if (BaleApp) { BaleApp.ready(); BaleApp.expand(); }
 const BALE_USER = BaleApp?.initDataUnsafe?.user || null;
-const BOT_USERNAME = "VantaSalesBot"; // @VantaSalesBot در بله
+const BOT_USERNAME = "VantaSalesBot";
 
-// ══════════════════════════════════════
-// SAMPLE DATA (در واقع از files.json می‌آید)
-// ══════════════════════════════════════
+const TYPE_GRAD = { "آپارتمان":"grad-apt","ویلا":"grad-villa","زمین":"grad-land","مغازه":"grad-shop","تجاری":"grad-comm" };
+const TYPE_ICON = { "آپارتمان":"🏢","ویلا":"🏡","زمین":"🌳","مغازه":"🏪","تجاری":"🏬" };
+
 const PROPERTIES = [
-  { id:"F-001", type_melk:"آپارتمان", type_moameleh:"فروش", metraj:"145", khab:"3",
-    tabaqeh:"4", sal_sakh:"1401", jahat:"شمالی", addr:"شیراز.زیتون کارمندی",
-    price1:"38,000,000", price2:"5,500,000,000", sanad:"شش‌دانگ",
-    lead_score:"hot", tozih:"نورگیر عالی، آسانسور، پارکینگ" },
-  { id:"F-002", type_melk:"آپارتمان", type_moameleh:"اجاره", metraj:"90", khab:"2",
-    tabaqeh:"2", sal_sakh:"1398", jahat:"جنوبی", addr:"شیراز.شهرک بهشتی",
-    price1:"12,000,000", price2:"300,000,000", sanad:"تک‌برگ",
-    lead_score:"", tozih:"" },
-  { id:"F-003", type_melk:"ویلا", type_moameleh:"فروش", metraj:"320", khab:"4",
-    tabaqeh:"—", sal_sakh:"1400", jahat:"دوبر", addr:"شیراز.سعدیه",
-    price1:"55,000,000", price2:"17,600,000,000", sanad:"شش‌دانگ",
-    lead_score:"hot", tozih:"استخر، باغچه ۵۰۰م" },
-  { id:"F-004", type_melk:"آپارتمان", type_moameleh:"فروش", metraj:"78", khab:"2",
-    tabaqeh:"1", sal_sakh:"1395", jahat:"شرقی", addr:"شیراز.قصردشت",
-    price1:"30,000,000", price2:"2,340,000,000", sanad:"وکالتی",
-    lead_score:"", tozih:"نیاز به رنگ‌آمیزی" },
-  { id:"F-005", type_melk:"مغازه", type_moameleh:"اجاره", metraj:"45", khab:"—",
-    tabaqeh:"همکف", sal_sakh:"1390", jahat:"—", addr:"شیراز.زند",
-    price1:"25,000,000", price2:"500,000,000", sanad:"شش‌دانگ",
-    lead_score:"", tozih:"موقعیت پرتردد" },
-  { id:"F-006", type_melk:"آپارتمان", type_moameleh:"فروش", metraj:"200", khab:"4",
-    tabaqeh:"6", sal_sakh:"1403", jahat:"شمالی", addr:"شیراز.الهیه",
-    price1:"72,000,000", price2:"14,400,000,000", sanad:"شش‌دانگ",
-    lead_score:"hot", tozih:"پنت‌هاوس، تراس ۴۰م، ویو کامل" },
+  { id:"F-001", type_melk:"آپارتمان", type_moameleh:"فروش", metraj:"145", khab:"3", tabaqeh:"4", sal_sakh:"1401", jahat:"شمالی", addr:"شیراز.زیتون کارمندی", price1:"38,000,000", price2:"5,500,000,000", sanad:"شش‌دانگ", lead_score:"hot", tozih:"نورگیر عالی، آسانسور، پارکینگ اختصاصی" },
+  { id:"F-002", type_melk:"آپارتمان", type_moameleh:"اجاره", metraj:"90", khab:"2", tabaqeh:"2", sal_sakh:"1398", jahat:"جنوبی", addr:"شیراز.شهرک بهشتی", price1:"12,000,000", price2:"300,000,000", sanad:"تک‌برگ", lead_score:"", tozih:"" },
+  { id:"F-003", type_melk:"ویلا", type_moameleh:"فروش", metraj:"320", khab:"4", tabaqeh:"—", sal_sakh:"1400", jahat:"دوبر", addr:"شیراز.سعدیه", price1:"55,000,000", price2:"17,600,000,000", sanad:"شش‌دانگ", lead_score:"hot", tozih:"استخر، باغچه ۵۰۰متری، روف‌گاردن" },
+  { id:"F-004", type_melk:"آپارتمان", type_moameleh:"فروش", metraj:"78", khab:"2", tabaqeh:"1", sal_sakh:"1395", jahat:"شرقی", addr:"شیراز.قصردشت", price1:"30,000,000", price2:"2,340,000,000", sanad:"وکالتی", lead_score:"", tozih:"مناسب زوج جوان" },
+  { id:"F-005", type_melk:"مغازه", type_moameleh:"اجاره", metraj:"45", khab:"—", tabaqeh:"همکف", sal_sakh:"1390", jahat:"—", addr:"شیراز.زند", price1:"25,000,000", price2:"500,000,000", sanad:"شش‌دانگ", lead_score:"", tozih:"موقعیت پرتردد تجاری" },
+  { id:"F-006", type_melk:"ویلا", type_moameleh:"فروش", metraj:"200", khab:"4", tabaqeh:"6", sal_sakh:"1403", jahat:"شمالی", addr:"شیراز.الهیه", price1:"72,000,000", price2:"14,400,000,000", sanad:"شش‌دانگ", lead_score:"hot", tozih:"پنت‌هاوس، تراس ۴۰متری، ویو کامل شهر" },
 ];
 
 const LEADS_DATA = [
-  { name:"محمد رضایی", budget:"۳ میلیارد", zone:"زیتون", buyer:"مصرفی",
-    score:"hot", phone:"09121234567", time:"۲ ساعت پیش", summary:"دنبال ۳ خواب شمالی" },
-  { name:"سارا احمدی", budget:"۱ میلیارد", zone:"قصردشت", buyer:"سرمایه‌گذار",
-    score:"warm", phone:"09351234567", time:"دیروز", summary:"آپارتمان کوچک، سند مهم" },
-  { name:"علی کریمی", budget:"بدون سقف", zone:"الهیه", buyer:"سازنده",
-    score:"hot", phone:"09901234567", time:"۳ ساعت پیش", summary:"زمین یا ویلای کلنگی" },
-  { name:"فاطمه موسوی", budget:"۵۰۰ میلیون", zone:"شهرک بهشتی", buyer:"مصرفی",
-    score:"cold", phone:"09141234567", time:"۳ روز پیش", summary:"اجاره ۲ خواب" },
-  { name:"حسین نجفی", budget:"۸ میلیارد", zone:"سعدیه", buyer:"سرمایه‌گذار",
-    score:"hot", phone:"09361234567", time:"۳۰ دقیقه پیش", summary:"ویلا یا زمین بزرگ" },
-  { name:"مریم صادقی", budget:"۴ میلیارد", zone:"زند", buyer:"مصرفی",
-    score:"warm", phone:"09191234567", time:"دیروز", summary:"تجاری یا آپارتمان" },
-  { name:"رضا طاهری", budget:"۲ میلیارد", zone:"قصردشت", buyer:"مصرفی",
-    score:"warm", phone:"09121111111", time:"۲ روز پیش", summary:"۳ خواب با پارکینگ" },
+  { name:"محمد رضایی", budget:"۳ میلیارد", zone:"زیتون", buyer:"مصرفی", score:"hot", time:"۲ ساعت پیش", summary:"دنبال ۳ خواب شمالی" },
+  { name:"سارا احمدی", budget:"۱ میلیارد", zone:"قصردشت", buyer:"سرمایه‌گذار", score:"warm", time:"دیروز", summary:"آپارتمان کوچک، سند مهم" },
+  { name:"علی کریمی", budget:"بدون سقف", zone:"الهیه", buyer:"سازنده", score:"hot", time:"۳ ساعت پیش", summary:"زمین یا ویلای کلنگی" },
+  { name:"فاطمه موسوی", budget:"۵۰۰ میلیون", zone:"شهرک بهشتی", buyer:"مصرفی", score:"cold", time:"۳ روز پیش", summary:"اجاره ۲ خواب" },
+  { name:"حسین نجفی", budget:"۸ میلیارد", zone:"سعدیه", buyer:"سرمایه‌گذار", score:"hot", time:"۳۰ دقیقه پیش", summary:"ویلا یا زمین بزرگ" },
+  { name:"مریم صادقی", budget:"۴ میلیارد", zone:"زند", buyer:"مصرفی", score:"warm", time:"دیروز", summary:"تجاری یا آپارتمان" },
 ];
 
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
-let activeFilter = "all";
-let activeLeadFilter = "all";
+let activeFilter = "all", activeLeadFilter = "all";
 let pinState = { filing: [], leads: [] };
-let unlockedSections = { filing: false, leads: false };
-const DEMO_PIN = "1234"; // در واقعی از env می‌آید
+let unlocked = { filing: false, leads: false };
+let currentList = [];
+const DEMO_PIN = "1234";
 
-// ══════════════════════════════════════
-// PAGE SWITCHING
-// ══════════════════════════════════════
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -842,278 +605,170 @@ function switchPage(page) {
   document.getElementById('nav-' + page).classList.add('active');
 }
 
-// ══════════════════════════════════════
-// FILTER CHIPS
-// ══════════════════════════════════════
 function setFilter(el, val) {
   document.querySelectorAll('#chips .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  activeFilter = val;
-  filterCards();
+  el.classList.add('active'); activeFilter = val; filterCards();
 }
-
 function filterCards() {
   const q = document.getElementById('search-input').value.trim().toLowerCase();
-  const filtered = PROPERTIES.filter(p => {
-    const matchFilter =
-      activeFilter === "all" ||
-      activeFilter === p.type_moameleh ||
-      activeFilter === p.type_melk ||
-      (activeFilter === "hot" && p.lead_score === "hot");
-    const matchSearch = !q || [p.id,p.addr,p.type_melk,p.tozih]
-      .join(" ").toLowerCase().includes(q);
-    return matchFilter && matchSearch;
+  currentList = PROPERTIES.filter(p => {
+    const mf = activeFilter==="all" || activeFilter===p.type_moameleh || activeFilter===p.type_melk || (activeFilter==="hot" && p.lead_score==="hot");
+    const ms = !q || [p.id,p.addr,p.type_melk,p.tozih].join(" ").toLowerCase().includes(q);
+    return mf && ms;
   });
-  renderCards(filtered);
+  renderCards(currentList);
 }
-
 function setLeadFilter(el, val) {
   document.querySelectorAll('#leads-content .chips .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  activeLeadFilter = val;
-  renderLeads();
+  el.classList.add('active'); activeLeadFilter = val; renderLeads();
 }
 
-// ══════════════════════════════════════
-// RENDER PROPERTY CARDS
-// ══════════════════════════════════════
 function renderCards(list) {
-  const container = document.getElementById('cards-container');
-  if (!list.length) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>فایلی پیدا نشد</div>';
-    return;
-  }
-  container.innerHTML = list.map((p, i) => {
-    const isSale = p.type_moameleh === "فروش";
-    const isHot = p.lead_score === "hot";
-    const badgeClass = isHot ? "badge-hot" : (isSale ? "badge-forsale" : "badge-rent");
-    const badgeText = isHot ? "🔥 فرصت ویژه" : p.type_moameleh;
-    const addr = p.addr.split(".").slice(1).join("، ");
+  const c = document.getElementById('cards-container');
+  if (!list.length) { c.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>فایلی پیدا نشد</div>'; return; }
+  c.innerHTML = list.map((p, i) => {
+    const isSale = p.type_moameleh==="فروش", isHot = p.lead_score==="hot";
+    const grad = TYPE_GRAD[p.type_melk] || "grad-apt";
+    const icon = TYPE_ICON[p.type_melk] || "🏠";
+    const zone = p.addr.split(".").slice(1).join("، ");
+    const typeBadge = isSale ? '<span class="pill-badge badge-forsale">فروش</span>' : '<span class="pill-badge badge-rent">اجاره</span>';
     return `
     <div class="card" onclick="showDetail(${i})">
-      ${isHot ? '<div class="hot-ribbon">فرصت ویژه</div>' : ''}
-      <div class="card-top">
-        <span class="card-id">${p.id}</span>
-        <span class="card-type-badge ${badgeClass}">${badgeText}</span>
-      </div>
-      <div class="card-title">${p.type_melk} ${p.metraj ? '· '+p.metraj+'م²' : ''}</div>
-      <div class="card-meta">
-        ${p.khab&&p.khab!=="—" ? `<div class="meta-pill">🛏 <span>${p.khab} خواب</span></div>` : ''}
-        ${p.tabaqeh&&p.tabaqeh!=="—" ? `<div class="meta-pill">🏢 <span>ط${p.tabaqeh}</span></div>` : ''}
-        ${p.sal_sakh ? `<div class="meta-pill">🗓 <span>${p.sal_sakh}</span></div>` : ''}
-        ${p.jahat&&p.jahat!=="—" ? `<div class="meta-pill">🧭 <span>${p.jahat}</span></div>` : ''}
-        ${addr ? `<div class="meta-pill">📍 <span>${addr}</span></div>` : ''}
-        ${p.sanad ? `<div class="meta-pill">📜 <span>${p.sanad}</span></div>` : ''}
-      </div>
-      <div class="card-price">
-        <div>
-          <div class="price-main">${formatPrice(p.price1, isSale)}</div>
-          ${!isSale ? `<div class="price-sub">ودیعه: ${formatPrice(p.price2, false)}</div>` : ''}
-          ${isSale ? `<div class="price-sub">کل: ${formatPrice(p.price2, true)}</div>` : ''}
+      <div class="card-image ${grad}">
+        <div class="ph-icon">${icon}</div>
+        <div class="card-badges-top">
+          <span class="pill-badge badge-id">${p.id}</span>
+          ${isHot ? '<span class="pill-badge badge-hot">🔥 فرصت ویژه</span>' : typeBadge}
         </div>
-        <div style="color:var(--gold-dim);font-size:18px">›</div>
+        <div class="ph-zone">📍 ${zone}</div>
       </div>
-      ${p.tozih ? `<div class="card-actions"><button class="btn btn-gold" onclick="event.stopPropagation();showDetail(${i})">مشاهده جزئیات</button><button class="btn btn-ghost" onclick="event.stopPropagation();startChat()">💬 مشاوره</button></div>` : ''}
+      <div class="card-body">
+        <div class="card-title">${p.type_melk} ${p.metraj?'· '+p.metraj+' متر':''}</div>
+        <div class="card-meta">
+          ${p.khab&&p.khab!=="—" ? `<div class="meta-pill">🛏 <b>${p.khab}</b> خواب</div>` : ''}
+          ${p.tabaqeh&&p.tabaqeh!=="—" ? `<div class="meta-pill">🏢 طبقه <b>${p.tabaqeh}</b></div>` : ''}
+          ${p.sal_sakh ? `<div class="meta-pill">🗓 <b>${p.sal_sakh}</b></div>` : ''}
+          ${p.sanad ? `<div class="meta-pill">📜 ${p.sanad}</div>` : ''}
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="price-main">${p.price1} ت${isSale?' /متر':''}</div>
+            <div class="price-sub">${isSale?'کل: '+p.price2+' ت':'ودیعه: '+p.price2+' ت'}</div>
+          </div>
+          <div class="card-arrow">‹</div>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
 
-function formatPrice(val, isMeter) {
-  if (!val) return "—";
-  return val + " ت" + (isMeter ? "/م²" : "");
-}
-
-// ══════════════════════════════════════
-// PROPERTY DETAIL MODAL
-// ══════════════════════════════════════
 function showDetail(idx) {
-  const p = PROPERTIES[idx] || PROPERTIES.find((_,i)=>i===idx);
-  const pList = PROPERTIES.filter(x => {
-    const matchFilter =
-      activeFilter === "all" ||
-      activeFilter === x.type_moameleh ||
-      activeFilter === x.type_melk ||
-      (activeFilter === "hot" && x.lead_score === "hot");
-    return matchFilter;
-  });
-  const prop = pList[idx];
-  if (!prop) return;
-  document.getElementById('modal-title').textContent =
-    `${prop.type_melk} ${prop.type_moameleh} · ${prop.id}`;
-  const addr = prop.addr.split(".").slice(1).join("، ");
+  const p = currentList[idx]; if (!p) return;
+  const icon = TYPE_ICON[p.type_melk] || "🏠";
+  const grad = TYPE_GRAD[p.type_melk] || "grad-apt";
+  const zone = p.addr.split(".").slice(1).join("، ");
+  const gal = document.getElementById('modal-gallery');
+  gal.className = 'modal-gallery ' + grad;
+  document.getElementById('modal-ph').textContent = icon;
+  document.getElementById('modal-title').textContent = `${p.type_melk} ${p.type_moameleh} · ${p.id}`;
   document.getElementById('modal-body').innerHTML = `
-    <div class="detail-row"><span class="detail-key">نوع ملک</span><span class="detail-val">${prop.type_melk}</span></div>
-    <div class="detail-row"><span class="detail-key">نوع معامله</span><span class="detail-val">${prop.type_moameleh}</span></div>
-    <div class="detail-row"><span class="detail-key">متراژ</span><span class="detail-val">${prop.metraj} م²</span></div>
-    ${prop.khab&&prop.khab!=="—"?`<div class="detail-row"><span class="detail-key">خواب</span><span class="detail-val">${prop.khab}</span></div>`:''}
-    ${prop.tabaqeh&&prop.tabaqeh!=="—"?`<div class="detail-row"><span class="detail-key">طبقه</span><span class="detail-val">${prop.tabaqeh}</span></div>`:''}
-    <div class="detail-row"><span class="detail-key">سال ساخت</span><span class="detail-val">${prop.sal_sakh}</span></div>
-    <div class="detail-row"><span class="detail-key">جهت</span><span class="detail-val">${prop.jahat}</span></div>
-    <div class="detail-row"><span class="detail-key">منطقه</span><span class="detail-val">${addr}</span></div>
-    <div class="detail-row"><span class="detail-key">سند</span><span class="detail-val">${prop.sanad}</span></div>
-    <div class="detail-row"><span class="detail-key">${prop.type_moameleh==='فروش'?'قیمت متری':'اجاره ماهانه'}</span><span class="detail-val" style="color:var(--gold)">${prop.price1} تومان</span></div>
-    <div class="detail-row"><span class="detail-key">${prop.type_moameleh==='فروش'?'قیمت کل':'ودیعه'}</span><span class="detail-val" style="color:var(--gold)">${prop.price2} تومان</span></div>
-    ${prop.tozih?`<div class="detail-row"><span class="detail-key">توضیحات</span><span class="detail-val">${prop.tozih}</span></div>`:''}
+    <div class="detail-row"><span class="detail-key">متراژ</span><span class="detail-val">${p.metraj} متر</span></div>
+    ${p.khab&&p.khab!=="—"?`<div class="detail-row"><span class="detail-key">خواب</span><span class="detail-val">${p.khab}</span></div>`:''}
+    ${p.tabaqeh&&p.tabaqeh!=="—"?`<div class="detail-row"><span class="detail-key">طبقه</span><span class="detail-val">${p.tabaqeh}</span></div>`:''}
+    <div class="detail-row"><span class="detail-key">سال ساخت</span><span class="detail-val">${p.sal_sakh}</span></div>
+    <div class="detail-row"><span class="detail-key">جهت</span><span class="detail-val">${p.jahat}</span></div>
+    <div class="detail-row"><span class="detail-key">منطقه</span><span class="detail-val">${zone}</span></div>
+    <div class="detail-row"><span class="detail-key">سند</span><span class="detail-val">${p.sanad}</span></div>
+    <div class="detail-row"><span class="detail-key">${p.type_moameleh==='فروش'?'قیمت متری':'اجاره ماهانه'}</span><span class="detail-val" style="color:var(--gold)">${p.price1} ت</span></div>
+    <div class="detail-row"><span class="detail-key">${p.type_moameleh==='فروش'?'قیمت کل':'ودیعه'}</span><span class="detail-val" style="color:var(--gold)">${p.price2} ت</span></div>
+    ${p.tozih?`<div class="detail-row"><span class="detail-key">توضیحات</span><span class="detail-val">${p.tozih}</span></div>`:''}
   `;
   document.getElementById('modal').classList.add('open');
-  if (BaleApp) BaleApp.BackButton?.show();
+  if (BaleApp?.BackButton) BaleApp.BackButton.show();
 }
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modal')) {
-    document.getElementById('modal').classList.remove('open');
-    if (BaleApp) BaleApp.BackButton?.hide();
-  }
-}
-
-// ══════════════════════════════════════
-// CHAT WITH BOT
-// ══════════════════════════════════════
-function startChat() {
+function closeModal(e) { if (e.target === document.getElementById('modal')) forceCloseModal(); }
+function forceCloseModal() {
   document.getElementById('modal').classList.remove('open');
-  if (BaleApp) {
-    BaleApp.openTelegramLink?.(`https://ble.ir/${BOT_USERNAME}`);
-    BaleApp.close?.();
-  } else {
-    showToast("در بله: ربات @VantaSalesBot را باز کنید");
-  }
+  if (BaleApp?.BackButton) BaleApp.BackButton.hide();
 }
 
-// ══════════════════════════════════════
-// RENDER LEADS
-// ══════════════════════════════════════
+function startChat() {
+  forceCloseModal();
+  if (BaleApp) { BaleApp.openTelegramLink?.(`https://ble.ir/${BOT_USERNAME}`); BaleApp.close?.(); }
+  else showToast("در بله: ربات @VantaSalesBot را باز کنید");
+}
+
 function renderLeads() {
-  const filtered = LEADS_DATA.filter(l =>
-    activeLeadFilter === "all" || l.score === activeLeadFilter
-  );
-  document.getElementById('leads-list').innerHTML = filtered.map(l => `
+  const f = LEADS_DATA.filter(l => activeLeadFilter==="all" || l.score===activeLeadFilter);
+  document.getElementById('leads-list').innerHTML = f.map(l => `
     <div class="lead-row">
-      <div class="lead-avatar avatar-${l.score}">
-        ${l.score==='hot'?'🔥':l.score==='warm'?'🌡️':'❄️'}
-      </div>
+      <div class="lead-avatar avatar-${l.score}">${l.score==='hot'?'🔥':l.score==='warm'?'🌡️':'❄️'}</div>
       <div class="lead-info">
         <div class="lead-name">${l.name}</div>
         <div class="lead-detail">📍 ${l.zone} · 💰 ${l.budget} · ${l.summary}</div>
       </div>
       <div class="lead-badges">
-        <span class="score-badge score-${l.score}">
-          ${l.score==='hot'?'داغ':l.score==='warm'?'گرم':'سرد'}
-        </span>
+        <span class="score-badge score-${l.score}">${l.score==='hot'?'داغ':l.score==='warm'?'گرم':'سرد'}</span>
         <span class="lead-time">${l.time}</span>
       </div>
-    </div>
-  `).join('') || '<div class="empty"><div class="empty-icon">👤</div>لیدی در این دسته نیست</div>';
+    </div>`).join('') || '<div class="empty"><div class="empty-icon">👤</div>لیدی نیست</div>';
 }
 
-// ══════════════════════════════════════
-// RENDER FILED PROPERTIES (Admin View)
-// ══════════════════════════════════════
 function renderFiled() {
   document.getElementById('filed-list').innerHTML = PROPERTIES.slice(0,3).map(p => `
     <div class="lead-row">
-      <div class="lead-avatar" style="background:var(--gold-glow)">🏠</div>
+      <div class="lead-avatar" style="background:var(--gold-glow)">${TYPE_ICON[p.type_melk]||'🏠'}</div>
       <div class="lead-info">
         <div class="lead-name">${p.type_melk} ${p.type_moameleh} · ${p.id}</div>
         <div class="lead-detail">${p.addr.split(".").slice(1).join("، ")} · ${p.metraj}م² · ${p.price2} ت</div>
       </div>
-      <div class="lead-badges">
-        <span class="score-badge ${p.lead_score==='hot'?'score-hot':'score-cold'}">
-          ${p.lead_score==='hot'?'🔥 داغ':'عادی'}
-        </span>
-      </div>
-    </div>
-  `).join('');
+      <div class="lead-badges"><span class="score-badge ${p.lead_score==='hot'?'score-hot':'score-cold'}">${p.lead_score==='hot'?'🔥 داغ':'عادی'}</span></div>
+    </div>`).join('');
 }
 
-// ══════════════════════════════════════
-// PIN SYSTEM
-// ══════════════════════════════════════
 function pinKey(section, key) {
-  const state = pinState[section];
-  if (key === 'del') { state.pop(); }
-  else if (key === 'clear') { pinState[section] = []; }
-  else if (state.length < 4) { state.push(key); }
+  const s = pinState[section];
+  if (key==='del') s.pop();
+  else if (key==='clear') pinState[section]=[];
+  else if (s.length<4) s.push(key);
   updateDots(section);
-  if (state.length === 4) setTimeout(() => checkPin(section), 150);
+  if (pinState[section].length===4) setTimeout(()=>checkPin(section),150);
 }
-
 function updateDots(section) {
-  const state = pinState[section];
-  const prefix = section === 'filing' ? 'fd' : 'ld';
-  for (let i = 0; i < 4; i++) {
-    const dot = document.getElementById(prefix + i);
-    if (dot) dot.classList.toggle('filled', i < state.length);
-  }
+  const s = pinState[section], pre = section==='filing'?'fd':'ld';
+  for (let i=0;i<4;i++){ const d=document.getElementById(pre+i); if(d) d.classList.toggle('filled', i<s.length); }
 }
-
 function checkPin(section) {
-  const entered = pinState[section].join('');
-  const err = document.getElementById(section + '-err');
-  if (entered === DEMO_PIN) {
-    unlockedSections[section] = true;
-    document.getElementById(section + '-lock').style.display = 'none';
-    document.getElementById(section + '-content').style.display = 'block';
-    if (section === 'leads') renderLeads();
-    if (section === 'filing') renderFiled();
+  const err = document.getElementById(section+'-err');
+  if (pinState[section].join('')===DEMO_PIN) {
+    unlocked[section]=true;
+    document.getElementById(section+'-lock').style.display='none';
+    document.getElementById(section+'-content').style.display='block';
+    if (section==='leads') renderLeads();
+    if (section==='filing') renderFiled();
     showToast("✅ دسترسی تأیید شد");
   } else {
-    err.textContent = "PIN اشتباه است. دوباره تلاش کنید.";
-    pinState[section] = [];
-    updateDots(section);
-    setTimeout(() => err.textContent = '', 2000);
+    err.textContent="PIN اشتباه است"; pinState[section]=[]; updateDots(section);
+    setTimeout(()=>err.textContent='',2000);
   }
 }
 
-// ══════════════════════════════════════
-// FILING SUBMIT
-// ══════════════════════════════════════
-function submitFile() {
-  showToast("✅ فایل در وانتا فایلینگ ثبت شد");
-}
-
-// ══════════════════════════════════════
-// ADMIN HINT
-// ══════════════════════════════════════
-function showAdminHint() {
-  switchPage('filing');
-  showToast("💡 PIN دمو: ۱۲۳۴");
-}
-
-// ══════════════════════════════════════
-// TOGGLE FILTERS (placeholder for extended filter panel)
-// ══════════════════════════════════════
-function toggleFilters() {
-  showToast("🔧 فیلتر پیشرفته — به زودی");
-}
-
-// ══════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════
+function submitFile() { showToast("✅ فایل در وانتا فایلینگ ثبت شد"); }
+function showAdminHint() { switchPage('filing'); showToast("💡 PIN دمو: ۱۲۳۴"); }
+function toggleFilters() { showToast("🔧 فیلتر پیشرفته — به‌زودی"); }
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ══════════════════════════════════════
-// BALE BACK BUTTON
-// ══════════════════════════════════════
 if (BaleApp?.BackButton) {
   BaleApp.BackButton.onClick(() => {
-    if (document.getElementById('modal').classList.contains('open')) {
-      document.getElementById('modal').classList.remove('open');
-      BaleApp.BackButton.hide();
-    } else {
-      BaleApp.close();
-    }
+    if (document.getElementById('modal').classList.contains('open')) forceCloseModal();
+    else BaleApp.close();
   });
 }
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-renderCards(PROPERTIES);
+filterCards();
 </script>
 </body>
 </html>
