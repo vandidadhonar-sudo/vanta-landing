@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VANTA — دمو</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080809;--bg1:#0E0E10;--bg2:#141416;--bg3:#1C1C1F;
+  --gold:#C5A459;--gold-d:#8A6E38;--gold-g:rgba(197,164,89,.10);
+  --text:#D8D8D4;--text2:#78787A;--border:rgba(197,164,89,.14);
+  --red:#C0392B;--green:#27AE60;--r:5px;--nav:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:14px;display:flex;flex-direction:column;height:100dvh}
+
+/* TOPBAR */
+.topbar{background:var(--bg1);border-bottom:1px solid var(--border);height:50px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:50}
+.logo{font-size:16px;font-weight:700;letter-spacing:4px;color:var(--gold)}
+.logo-sub{font-size:9px;color:var(--text2);letter-spacing:2px;margin-top:1px}
+.demo-badge{font-size:10px;color:var(--gold-d);border:1px solid rgba(197,164,89,.25);padding:3px 10px;border-radius:2px}
+
+/* TICKER */
+.ticker{background:var(--bg1);border-bottom:1px solid var(--border);height:30px;overflow:hidden;flex-shrink:0}
+.ticker-track{display:flex;align-items:center;height:100%;white-space:nowrap;animation:scroll 30s linear infinite;width:max-content}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:5px;padding:0 18px;font-size:11px;border-right:1px solid rgba(197,164,89,.1)}
+.tl{color:var(--text2)}.tv{color:var(--text);font-weight:600}
+.up{color:#27AE60;font-size:10px}.dn{color:var(--red);font-size:10px}
+
+/* PULSE */
+.pulse{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 14px;flex-shrink:0}
+.pulse-lbl{font-size:9px;color:var(--gold-d);letter-spacing:1.5px;margin-bottom:6px}
+.pulse-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}
+.pulse-row::-webkit-scrollbar{display:none}
+.pc{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 11px;white-space:nowrap;flex-shrink:0;cursor:pointer;transition:border-color .2s}
+.pc:hover{border-color:var(--gold-d)}
+.ph{font-size:10px;color:var(--text2);display:block}
+.pp{font-size:12px;color:var(--gold);font-weight:600}
+
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:12px 14px calc(var(--nav) + 76px);display:none;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.page::-webkit-scrollbar{display:none}
+.page.active{display:block}
+
+/* SEARCH */
+.search-inp{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:13px;padding:9px 13px;outline:none;margin-bottom:10px;transition:border .2s}
+.search-inp::placeholder{color:var(--text2)}
+.search-inp:focus{border-color:var(--gold-d)}
+
+/* CHIPS */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Vazirmatn',sans-serif;font-size:11px;padding:5px 11px;border-radius:2px;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.chip.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+
+/* CARD */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
+.card:active{transform:scale(.99)}
+.card:hover{border-color:var(--gold-d)}
+.card-ph{height:155px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.g-apt{background:linear-gradient(145deg,#141928 0%,#0C0D14 70%,#080809 100%)}
+.g-vila{background:linear-gradient(145deg,#121A13 0%,#0C120D 70%,#080809 100%)}
+.g-land{background:linear-gradient(145deg,#1A1610 0%,#120F0B 70%,#080809 100%)}
+.g-com{background:linear-gradient(145deg,#1A1218 0%,#120D10 70%,#080809 100%)}
+.card-ph::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(197,164,89,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(197,164,89,.05) 1px,transparent 1px);background-size:28px 28px}
+.card-ph::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(transparent,rgba(8,8,9,.94))}
+.ph-logo{font-size:13px;font-weight:700;letter-spacing:4px;color:rgba(197,164,89,.07);user-select:none}
+.ph-ov{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;z-index:1;display:flex;align-items:flex-end;justify-content:space-between}
+.ph-id{font-size:10px;color:rgba(197,164,89,.45);letter-spacing:1px}
+.bgs{display:flex;gap:5px}
+.bdg{font-size:9px;font-weight:700;padding:2px 8px;border-radius:2px;letter-spacing:.3px}
+.b-sale{background:rgba(197,164,89,.18);color:var(--gold);border:1px solid rgba(197,164,89,.28)}
+.b-rent{background:rgba(80,130,200,.15);color:#7AA8D8;border:1px solid rgba(80,130,200,.25)}
+.b-hot{background:rgba(192,57,43,.22);color:#E05C4C;border:1px solid rgba(192,57,43,.32)}
+.card-body{padding:11px 13px 13px}
+.card-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
+.card-loc{font-size:11px;color:var(--text2);margin-bottom:7px}
+.cmp{display:inline-block;font-size:10px;padding:2px 8px;border-radius:2px;margin-bottom:7px}
+.cmp-lo{background:rgba(39,174,96,.15);color:#27AE60}
+.cmp-ok{background:rgba(197,164,89,.12);color:var(--gold-d)}
+.cmp-hi{background:rgba(192,57,43,.15);color:#E05C4C}
+.specs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.sp{font-size:11px;color:var(--text2)}
+.sp b{color:var(--text);font-weight:500}
+.card-bot{border-top:1px solid rgba(197,164,89,.07);padding-top:9px;display:flex;justify-content:space-between;align-items:center}
+.pm{font-size:14px;font-weight:700;color:var(--gold)}
+.pl{font-size:10px;color:var(--text2);margin-top:1px}
+.pa{text-align:left}
+.pan{font-size:12px;color:var(--gold-d)}
+.pal{font-size:10px;color:var(--text2);margin-top:2px}
+.adv-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid rgba(197,164,89,.12);border-radius:3px;padding:5px 9px;margin-top:9px}
+.adv-av{width:22px;height:22px;border-radius:50%;background:var(--bg3);border:1px solid rgba(197,164,89,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold-d);flex-shrink:0}
+.adv-nm{font-size:11px;color:var(--text2)}
+.adv-ck{color:var(--gold);margin-right:1px}
+
+/* CALC PAGE */
+.calc-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:20px 16px;margin-bottom:12px}
+.calc-tog{display:flex;gap:8px;margin-bottom:20px}
+.ctab{flex:1;padding:10px;background:var(--bg2);border:1px solid rgba(197,164,89,.1);border-radius:4px;color:var(--text2);font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;text-align:center;transition:all .2s}
+.ctab.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+.clbl{font-size:10px;color:var(--text2);margin-bottom:6px;display:block}
+.cinp{width:100%;background:var(--bg2);border:1px solid rgba(197,164,89,.12);border-radius:4px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:15px;padding:12px 13px;outline:none;transition:border .2s;text-align:center}
+.cinp:focus{border-color:var(--gold-d)}
+.cinp::placeholder{color:var(--text2);font-size:12px}
+.cres{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;margin-top:10px}
+.cres-n{font-size:24px;font-weight:700;color:var(--gold)}
+.cres-l{font-size:11px;color:var(--text2);margin-top:4px}
+.cnote{font-size:10px;color:var(--text2);text-align:center;margin-top:14px;line-height:1.8;opacity:.7}
+
+/* REQUEST PAGE */
+.req-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.req-t{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.req-s{font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.8}
+.fr{margin-bottom:10px}
+.fl{font-size:10px;color:var(--text2);margin-bottom:4px;display:block}
+.fi,.fs{width:100%;background:var(--bg2);border:1px solid rgba(197,164,89,.1);border-radius:4px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:13px;padding:9px 11px;outline:none;transition:border .2s}
+.fi:focus,.fs:focus{border-color:var(--gold-d)}
+.fi::placeholder{color:var(--text2);font-size:12px}
+.fs{appearance:none;cursor:pointer}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn-req{width:100%;background:var(--gold);color:#000;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:var(--r);cursor:pointer;margin-top:8px;transition:opacity .2s}
+.btn-req:hover{opacity:.9}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:var(--bg1);border-top:1px solid var(--border);display:flex;z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative}
+.ni svg{width:18px;height:18px;stroke:var(--text2);fill:none;stroke-width:1.5;transition:stroke .2s}
+.ni-lbl{font-size:9px;letter-spacing:.5px;color:var(--text2);transition:color .2s}
+.ni.active svg{stroke:var(--gold)}
+.ni.active .ni-lbl{color:var(--gold)}
+.ni::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .25s}
+.ni.active::before{transform:scaleX(1)}
+
+/* AI BTN */
+.ai-btn{position:fixed;bottom:calc(var(--nav)+10px);left:14px;right:14px;background:linear-gradient(135deg,#D4A843 0%,#C5A459 50%,#9A7A40 100%);color:#000;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:700;padding:13px;border:none;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;z-index:90;box-shadow:0 4px 20px rgba(197,164,89,.2);transition:opacity .2s}
+.ai-btn:hover{opacity:.9}
+.ai-btn svg{width:16px;height:16px;fill:none;stroke:#000;stroke-width:2}
+
+/* MODAL */
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-wrap.open{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;width:100%;max-width:480px;max-height:90dvh;overflow-y:auto;animation:up .28s ease;scrollbar-width:none}
+.modal::-webkit-scrollbar{display:none}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mh{width:30px;height:3px;background:var(--border);border-radius:2px;margin:11px auto 0}
+.modal-ph{height:180px;margin-top:11px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.modal-ph::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(197,164,89,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(197,164,89,.05) 1px,transparent 1px);background-size:28px 28px}
+.modal-ph::after{content:'';position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(transparent,rgba(8,8,9,.96))}
+.mph-txt{position:absolute;bottom:14px;left:14px;right:14px;z-index:1;display:flex;justify-content:space-between;align-items:flex-end}
+.mbody{padding:16px}
+.price-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start}
+.pb-main{font-size:20px;font-weight:700;color:var(--gold)}
+.pb-lbl{font-size:10px;color:var(--text2);margin-top:3px}
+.adv-card{background:var(--bg2);border:1px solid rgba(197,164,89,.12);border-radius:var(--r);padding:12px 13px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.adv-av2{width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid rgba(197,164,89,.2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--gold-d);flex-shrink:0}
+.adv-nm2{font-size:14px;font-weight:600;color:var(--text)}
+.adv-bdg{font-size:10px;color:var(--gold);margin-top:2px}
+.adv-sp{font-size:11px;color:var(--text2);margin-top:2px}
+.dtbl{width:100%;border-collapse:collapse;margin-bottom:14px}
+.dtbl td{padding:9px 0;font-size:12px;border-bottom:1px solid rgba(197,164,89,.06)}
+.dtbl td:first-child{color:var(--text2);width:42%}
+.dtbl td:last-child{color:var(--text);font-weight:500;text-align:left}
+.btn-cta{width:100%;background:var(--gold);color:#000;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;padding:14px;border:none;border-radius:var(--r);cursor:pointer;transition:opacity .2s}
+.btn-cta:hover{opacity:.9}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav)+78px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:12px;padding:8px 18px;border-radius:3px;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="logo">VANTA</div><div class="logo-sub">مینی‌اپ شیراز</div></div>
+  <div class="demo-badge">نسخه دمو</div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ti"><span class="tl">دلار</span><span class="tv">۷۴٬۵۰۰</span><span class="up">▲۱.۲٪</span></div>
+    <div class="ti"><span class="tl">یورو</span><span class="tv">۸۲٬۳۰۰</span><span class="up">▲۰.۸٪</span></div>
+    <div class="ti"><span class="tl">سکه</span><span class="tv">۴۵٬۲۰۰٬۰۰۰</span><span class="dn">▼۰.۳٪</span></div>
+    <div class="ti"><span class="tl">طلا ۱۸</span><span class="tv">۵٬۸۰۰٬۰۰۰</span><span class="up">▲۰.۵٪</span></div>
+    <div class="ti"><span class="tl">بیتکوین</span><span class="tv">$۱۰۵٬۴۰۰</span><span class="up">▲۲.۱٪</span></div>
+    <div class="ti"><span class="tl">اتریوم</span><span class="tv">$۳٬۴۵۰</span><span class="up">▲۱.۵٪</span></div>
+    <div class="ti"><span class="tl">تتر</span><span class="tv">۷۴٬۱۰۰</span><span class="dn">▼۰.۱٪</span></div>
+    <div class="ti"><span class="tl">دلار</span><span class="tv">۷۴٬۵۰۰</span><span class="up">▲۱.۲٪</span></div>
+    <div class="ti"><span class="tl">یورو</span><span class="tv">۸۲٬۳۰۰</span><span class="up">▲۰.۸٪</span></div>
+    <div class="ti"><span class="tl">سکه</span><span class="tv">۴۵٬۲۰۰٬۰۰۰</span><span class="dn">▼۰.۳٪</span></div>
+    <div class="ti"><span class="tl">طلا ۱۸</span><span class="tv">۵٬۸۰۰٬۰۰۰</span><span class="up">▲۰.۵٪</span></div>
+    <div class="ti"><span class="tl">بیتکوین</span><span class="tv">$۱۰۵٬۴۰۰</span><span class="up">▲۲.۱٪</span></div>
+    <div class="ti"><span class="tl">اتریوم</span><span class="tv">$۳٬۴۵۰</span><span class="up">▲۱.۵٪</span></div>
+    <div class="ti"><span class="tl">تتر</span><span class="tv">۷۴٬۱۰۰</span><span class="dn">▼۰.۱٪</span></div>
+  </div>
+</div>
+
+<div class="pulse">
+  <div class="pulse-lbl">نبض بازار شیراز</div>
+  <div class="pulse-row">
+    <div class="pc" onclick="fltHood('معالی آباد')"><span class="ph">معالی آباد</span><span class="pp">۸۵م/م²</span></div>
+    <div class="pc" onclick="fltHood('ارم')"><span class="ph">ارم</span><span class="pp">۹۵م/م²</span></div>
+    <div class="pc" onclick="fltHood('چمران')"><span class="ph">چمران</span><span class="pp">۷۵م/م²</span></div>
+    <div class="pc" onclick="fltHood('قصردشت')"><span class="ph">قصردشت</span><span class="pp">۶۵م/م²</span></div>
+    <div class="pc" onclick="fltHood('خاکشناسی')"><span class="ph">خاکشناسی</span><span class="pp">۷۰م/م²</span></div>
+    <div class="pc" onclick="fltHood('فلکه گاز')"><span class="ph">فلکه گاز</span><span class="pp">۶۰م/م²</span></div>
+    <div class="pc" onclick="fltHood('شهرک صدرا')"><span class="ph">شهرک صدرا</span><span class="pp">۵۵م/م²</span></div>
+    <div class="pc" onclick="fltHood('باغ ناری')"><span class="ph">باغ ناری</span><span class="pp">۷۲م/م²</span></div>
+    <div class="pc" onclick="fltHood('شهرک بهشتی')"><span class="ph">شهرک بهشتی</span><span class="pp">۶۸م/م²</span></div>
+  </div>
+</div>
+
+<div class="pages">
+
+  <div class="page active" id="pg-melk">
+    <input class="search-inp" id="sinp" type="search" placeholder="جستجو در ملک‌های شیراز..." oninput="filterCards()">
+    <div class="chips" id="chips">
+      <button class="chip on" onclick="setF(this,'all')">همه</button>
+      <button class="chip" onclick="setF(this,'فروش')">فروش</button>
+      <button class="chip" onclick="setF(this,'اجاره')">اجاره</button>
+      <button class="chip" onclick="setF(this,'hot')">فرصت ویژه</button>
+      <button class="chip" onclick="setF(this,'معالی آباد')">معالی آباد</button>
+      <button class="chip" onclick="setF(this,'ارم')">ارم</button>
+      <button class="chip" onclick="setF(this,'چمران')">چمران</button>
+      <button class="chip" onclick="setF(this,'قصردشت')">قصردشت</button>
+      <button class="chip" onclick="setF(this,'شهرک صدرا')">شهرک صدرا</button>
+      <button class="chip" onclick="setF(this,'خاکشناسی')">خاکشناسی</button>
+      <button class="chip" onclick="setF(this,'شهرک بهشتی')">شهرک بهشتی</button>
+      <button class="chip" onclick="setF(this,'باغ ناری')">باغ ناری</button>
+    </div>
+    <div id="cards-wrap"></div>
+  </div>
+
+  <div class="page" id="pg-calc">
+    <div class="calc-card">
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">محاسبه‌گر رهن و اجاره</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:18px">هر ۳۰ میلیون رهن = ۱ میلیون اجاره ماهانه</div>
+      <div class="calc-tog">
+        <button class="ctab on" id="t-rahn" onclick="swCalc('rahn')">رهن ← اجاره</button>
+        <button class="ctab" id="t-ejare" onclick="swCalc('ejare')">اجاره ← رهن</button>
+      </div>
+      <div id="c-rahn">
+        <div class="fr"><label class="clbl">مبلغ رهن (تومان)</label>
+          <input class="cinp" id="i-rahn" type="number" placeholder="مثال: 500000000" oninput="calcR()">
+        </div>
+        <div class="cres"><div class="cres-n" id="r-rahn">—</div><div class="cres-l">اجاره ماهانه معادل</div></div>
+      </div>
+      <div id="c-ejare" style="display:none">
+        <div class="fr"><label class="clbl">اجاره ماهانه (تومان)</label>
+          <input class="cinp" id="i-ejare" type="number" placeholder="مثال: 15000000" oninput="calcE()">
+        </div>
+        <div class="cres"><div class="cres-n" id="r-ejare">—</div><div class="cres-l">رهن کامل معادل</div></div>
+      </div>
+      <div class="cnote">نرخ تبدیل بر اساس بازار شیراز<br>توسط سرپرست قابل به‌روزرسانی است</div>
+    </div>
+  </div>
+
+  <div class="page" id="pg-req">
+    <div class="req-card">
+      <div class="req-t">درخواست ملک</div>
+      <div class="req-s">مشخصات ملک مورد نظر و اطلاعات تماس خود را وارد کنید.<br>یک مشاور وانتا در اسرع وقت با شما تماس می‌گیرد.</div>
+      <div class="fr"><label class="fl">نام و نام خانوادگی</label><input class="fi" id="r-name" type="text" placeholder="اسم شما"></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">شماره تماس</label><input class="fi" id="r-tel" type="tel" placeholder="۰۹۱۲..."></div>
+        <div class="fr"><label class="fl">آیدی بله</label><input class="fi" id="r-bale" type="text" placeholder="@username"></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">نوع معامله</label>
+          <select class="fs" id="r-type"><option>خرید</option><option>اجاره</option><option>رهن</option></select>
+        </div>
+        <div class="fr"><label class="fl">نوع ملک</label>
+          <select class="fs" id="r-melk"><option>آپارتمان</option><option>ویلا</option><option>زمین</option><option>تجاری</option></select>
+        </div>
+      </div>
+      <div class="fr"><label class="fl">محله مورد نظر</label>
+        <select class="fs" id="r-hood">
+          <option>فرقی ندارد</option><option>معالی آباد</option><option>ارم</option>
+          <option>خاکشناسی</option><option>باغ ناری</option><option>فلکه گاز</option>
+          <option>قصردشت</option><option>ابریشمی</option><option>تاچارا</option>
+          <option>صنایع</option><option>چمران</option><option>زرگری</option>
+          <option>شهرک بهشتی</option><option>شهرک گلستان</option>
+          <option>شهرک صدرا</option><option>بلوار جمهوری</option>
+        </select>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">بودجه</label><input class="fi" id="r-budget" type="text" placeholder="مثال: ۵ میلیارد"></div>
+        <div class="fr"><label class="fl">متراژ تقریبی</label><input class="fi" id="r-metraj" type="text" placeholder="مثال: ۱۲۰ م²"></div>
+      </div>
+      <div class="fr"><label class="fl">توضیحات</label><input class="fi" id="r-note" type="text" placeholder="شرایط خاص، ترجیحات..."></div>
+      <button class="btn-req" onclick="subReq()">ثبت درخواست — مشاور تماس می‌گیرد</button>
+    </div>
+  </div>
+
+</div>
+
+<nav class="nav">
+  <div class="ni active" id="ni-melk" onclick="goPage('melk')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="ni-lbl">ملک‌ها</div>
+  </div>
+  <div class="ni" id="ni-calc" onclick="goPage('calc')">
+    <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
+    <div class="ni-lbl">محاسبه‌گر</div>
+  </div>
+  <div class="ni" id="ni-req" onclick="goPage('req')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <div class="ni-lbl">درخواست</div>
+  </div>
+</nav>
+
+<button class="ai-btn" onclick="openAI()">
+  <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  گفتگو با مشاور هوش مصنوعی
+</button>
+
+<div class="modal-wrap" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-box"><div class="mh"></div><div id="mc"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const RATE=30;
+let af='all';
+
+const P=[
+  {id:'F-001',type_melk:'آپارتمان',type_moameleh:'فروش',metraj:'145',khab:'3',tabaqeh:'5',sal_sakh:'1402',jahat:'شمالی',hood:'معالی آباد',p1:'87000000',p2:'12615000000',ref:85000000,sanad:'تک‌برگ',asansor:'دارد',parking:'دارد',anbari:'دارد',lead_score:'hot',tozih:'نورگیر عالی · ویو کوه · تراس ۲۰م²',adv:'هادی بخت‌زاده',avc:true},
+  {id:'F-002',type_melk:'آپارتمان',type_moameleh:'فروش',metraj:'120',khab:'3',tabaqeh:'3',sal_sakh:'1400',jahat:'شمالی',hood:'ارم',p1:'92000000',p2:'11040000000',ref:95000000,sanad:'شش‌دانگ',asansor:'دارد',parking:'دارد',anbari:'ندارد',lead_score:'normal',tozih:'',adv:'علی احمدی',avc:false},
+  {id:'F-003',type_melk:'ویلا',type_moameleh:'فروش',metraj:'350',khab:'4',tabaqeh:'—',sal_sakh:'1401',jahat:'دوبر',hood:'شهرک صدرا',p1:'52000000',p2:'18200000000',ref:55000000,sanad:'شش‌دانگ',asansor:'ندارد',parking:'دارد',anbari:'دارد',lead_score:'hot',tozih:'استخر · سونا · باغچه ۶۰۰م²',adv:'هادی بخت‌زاده',avc:true},
+  {id:'F-004',type_melk:'آپارتمان',type_moameleh:'اجاره',metraj:'95',khab:'2',tabaqeh:'2',sal_sakh:'1399',jahat:'جنوبی',hood:'چمران',p1:'14000000',p2:'350000000',ref:75000000,sanad:'تک‌برگ',asansor:'دارد',parking:'ندارد',anbari:'دارد',lead_score:'normal',tozih:'',adv:'علی احمدی',avc:false},
+  {id:'F-005',type_melk:'تجاری',type_moameleh:'اجاره',metraj:'60',khab:'—',tabaqeh:'همکف',sal_sakh:'1395',jahat:'—',hood:'فلکه گاز',p1:'32000000',p2:'800000000',ref:60000000,sanad:'شش‌دانگ',asansor:'ندارد',parking:'ندارد',anbari:'ندارد',lead_score:'hot',tozih:'ویترین بزرگ · موقعیت عالی',adv:'هادی بخت‌زاده',avc:true},
+  {id:'F-006',type_melk:'زمین',type_moameleh:'فروش',metraj:'420',khab:'—',tabaqeh:'—',sal_sakh:'—',jahat:'شمالی',hood:'خاکشناسی',p1:'68000000',p2:'28560000000',ref:70000000,sanad:'شش‌دانگ',asansor:'ندارد',parking:'ندارد',anbari:'ندارد',lead_score:'normal',tozih:'مجوز ۱۲ واحد · زمین صاف',adv:'علی احمدی',avc:false},
+];
+
+function goPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.getElementById('ni-'+p).classList.add('active');
+}
+
+function setF(el,val){
+  document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); af=val; renderCards(fp());
+}
+
+function fltHood(h){
+  af=h;
+  document.querySelectorAll('#chips .chip').forEach(c=>{
+    c.classList.toggle('on',c.textContent.trim()===h);
+  });
+  goPage('melk'); renderCards(fp());
+}
+
+function filterCards(){renderCards(fp());}
+
+function fp(){
+  const q=(document.getElementById('sinp')?.value||'').trim().toLowerCase();
+  return P.filter(p=>{
+    const mf=af==='all'||af===p.type_moameleh||af===p.hood||(af==='hot'&&p.lead_score==='hot');
+    const ms=!q||[p.id,p.hood,p.type_melk,p.tozih].join(' ').toLowerCase().includes(q);
+    return mf&&ms;
+  });
+}
+
+function fmt(v){
+  const n=parseInt(String(v).replace(/,/g,''),10);
+  if(isNaN(n))return '—';
+  if(n>=1e9)return (n/1e9).toFixed(1).replace(/\.0$/,'')+'م.ت';
+  if(n>=1e6)return (n/1e6).toFixed(0)+'م';
+  return String(v);
+}
+
+function cmp(p1,ref){
+  const n=parseInt(String(p1).replace(/,/g,''),10);
+  if(!ref||isNaN(n))return '';
+  const d=Math.round((n-ref)/ref*100);
+  if(d<=-8)return `<span class="cmp cmp-lo">${Math.abs(d)}٪ زیر میانگین محله</span>`;
+  if(d>=8)return `<span class="cmp cmp-hi">${d}٪ بالای میانگین محله</span>`;
+  return `<span class="cmp cmp-ok">هم‌سطح میانگین محله</span>`;
+}
+
+function gc(t){
+  if(t==='آپارتمان')return 'g-apt';
+  if(t==='ویلا')return 'g-vila';
+  if(t==='زمین')return 'g-land';
+  return 'g-com';
+}
+
+function renderCards(list){
+  const w=document.getElementById('cards-wrap');
+  if(!list.length){w.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--text2);font-size:12px">ملکی پیدا نشد</div>';return;}
+  w.innerHTML=list.map(p=>{
+    const iS=p.type_moameleh==='فروش',iH=p.lead_score==='hot';
+    const init=p.adv?p.adv.charAt(0):'م';
+    return `<div class="card" onclick="openDetail('${p.id}')">
+<div class="card-ph ${gc(p.type_melk)}">
+  <div class="ph-logo">VANTA</div>
+  <div class="ph-ov">
+    <span class="ph-id">${p.id}</span>
+    <div class="bgs">${iH?'<span class="bdg b-hot">HOT</span>':''}<span class="bdg ${iS?'b-sale':'b-rent'}">${p.type_moameleh}</span></div>
+  </div>
+</div>
+<div class="card-body">
+  <div class="card-title">${p.type_melk}${p.metraj?' · '+p.metraj+' م²':''}</div>
+  <div class="card-loc">📍 ${p.hood} · شیراز</div>
+  ${cmp(p.p1,p.ref)}
+  <div class="specs">
+    ${p.khab&&p.khab!=='—'?`<div class="sp"><b>${p.khab}</b> خواب</div>`:''}
+    ${p.tabaqeh&&p.tabaqeh!=='—'?`<div class="sp">طبقه <b>${p.tabaqeh}</b></div>`:''}
+    ${p.sal_sakh&&p.sal_sakh!=='—'?`<div class="sp">ساخت <b>${p.sal_sakh}</b></div>`:''}
+    ${p.jahat&&p.jahat!=='—'?`<div class="sp"><b>${p.jahat}</b></div>`:''}
+  </div>
+  <div class="card-bot">
+    <div><div class="pm">${fmt(p.p1)} ت${iS?'/م²':''}</div><div class="pl">${iS?'قیمت متری':'اجاره ماهانه'}</div></div>
+    <div class="pa"><div class="pan">${fmt(p.p2)}</div><div class="pal">${iS?'قیمت کل':'ودیعه'}</div></div>
+  </div>
+  <div class="adv-chip">
+    <div class="adv-av">${init}</div>
+    <span class="adv-nm">${p.avc?'<span class="adv-ck">✓</span>':''} ${p.adv}</span>
+  </div>
+</div></div>`;
+  }).join('');
+}
+
+function openDetail(id){
+  const p=P.find(x=>x.id===id); if(!p)return;
+  const iS=p.type_moameleh==='فروش',init=p.adv?p.adv.charAt(0):'م';
+  document.getElementById('mc').innerHTML=`
+<div class="modal-ph ${gc(p.type_melk)}">
+  <div style="font-size:13px;font-weight:700;letter-spacing:4px;color:rgba(197,164,89,.07)">VANTA</div>
+  <div class="mph-txt">
+    <div><div style="font-size:20px;font-weight:700;color:var(--text)">${p.type_melk}</div><div style="font-size:12px;color:var(--gold);margin-top:3px">📍 ${p.hood} · شیراز</div></div>
+    <span style="font-size:10px;color:rgba(197,164,89,.4);letter-spacing:1px">${p.id}</span>
+  </div>
+</div>
+<div class="mbody">
+  <div class="price-box">
+    <div><div class="pb-main">${fmt(p.p1)} ت${iS?'/م²':''}</div><div class="pb-lbl">${iS?'قیمت متری':'اجاره ماهانه'}</div><div>${cmp(p.p1,p.ref)}</div></div>
+    <div style="text-align:left"><div style="font-size:16px;font-weight:600;color:var(--gold-d)">${fmt(p.p2)} ت</div><div style="font-size:10px;color:var(--text2);margin-top:3px">${iS?'قیمت کل':'ودیعه'}</div></div>
+  </div>
+  <div class="adv-card">
+    <div class="adv-av2">${init}</div>
+    <div><div class="adv-nm2">${p.avc?'<span style="color:var(--gold)">✓ </span>':''}${p.adv}</div><div class="adv-bdg">${p.avc?'مشاور تأییدشده وانتا':'مشاور وانتا'}</div><div class="adv-sp">کارشناس: ${p.hood} و مناطق مجاور</div></div>
+  </div>
+  <table class="dtbl">
+    <tr><td>نوع معامله</td><td>${p.type_moameleh}</td></tr>
+    <tr><td>متراژ</td><td>${p.metraj} م²</td></tr>
+    ${p.khab&&p.khab!=='—'?`<tr><td>خواب</td><td>${p.khab}</td></tr>`:''}
+    ${p.tabaqeh&&p.tabaqeh!=='—'?`<tr><td>طبقه</td><td>${p.tabaqeh}</td></tr>`:''}
+    ${p.sal_sakh&&p.sal_sakh!=='—'?`<tr><td>سال ساخت</td><td>${p.sal_sakh}</td></tr>`:''}
+    ${p.jahat&&p.jahat!=='—'?`<tr><td>جهت</td><td>${p.jahat}</td></tr>`:''}
+    <tr><td>سند</td><td>${p.sanad}</td></tr>
+    <tr><td>آسانسور</td><td>${p.asansor}</td></tr>
+    <tr><td>پارکینگ</td><td>${p.parking}</td></tr>
+    <tr><td>انباری</td><td>${p.anbari}</td></tr>
+    ${p.tozih?`<tr><td>توضیحات</td><td>${p.tozih}</td></tr>`:''}
+  </table>
+  <button class="btn-cta" onclick="openAI()">گفتگو با مشاور هوش مصنوعی</button>
+</div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e){if(e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');}
+function openAI(){document.getElementById('modal').classList.remove('open');showToast('در حال باز کردن @melkshirazbot ...');}
+
+function swCalc(t){
+  document.getElementById('c-rahn').style.display=t==='rahn'?'block':'none';
+  document.getElementById('c-ejare').style.display=t==='ejare'?'block':'none';
+  document.getElementById('t-rahn').classList.toggle('on',t==='rahn');
+  document.getElementById('t-ejare').classList.toggle('on',t==='ejare');
+}
+function calcR(){const v=parseInt(document.getElementById('i-rahn').value||0,10);document.getElementById('r-rahn').textContent=v?fmt(Math.round(v/RATE))+' تومان':'—';}
+function calcE(){const v=parseInt(document.getElementById('i-ejare').value||0,10);document.getElementById('r-ejare').textContent=v?fmt(v*RATE)+' تومان':'—';}
+
+function subReq(){
+  const n=document.getElementById('r-name').value.trim();
+  const t=document.getElementById('r-tel').value.trim();
+  if(!n||!t){showToast('نام و شماره تماس الزامی است');return;}
+  showToast('درخواست ثبت شد — مشاور با شما تماس می‌گیرد');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+renderCards(P);
+</script>
+</body>
+</html>
