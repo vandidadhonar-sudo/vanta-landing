@@ -10,7 +10,7 @@
   --bg:#080809;--bg1:#0E0E10;--bg2:#141416;--bg3:#1C1C1F;
   --gold:#C5A459;--gd:#8A6E38;--gg:rgba(197,164,89,.10);
   --tx:#D8D8D4;--tx2:#78787A;--bd:rgba(197,164,89,.14);
-  --red:#C0392B;--green:#27AE60;--r:5px;--nav:58px;
+  --red:#C0392B;--green:#27AE60;--r:5px;--nav:68px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -121,11 +121,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 .adv-spec{font-size:10px;color:var(--tx2);opacity:.7;margin-top:1px}
 .adv-chat{background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;flex-shrink:0}
 
+/* tap hint */
+.card-tap{margin-top:10px;padding:8px 0 0;border-top:1px solid rgba(197,164,89,.07);display:flex;align-items:center;justify-content:center;gap:5px;font-size:10px;color:rgba(197,164,89,.45);letter-spacing:.5px}
+.card-tap svg{width:11px;height:11px;stroke:rgba(197,164,89,.45);fill:none;stroke-width:1.8}
+
 /* ── BOTTOM NAV ── */
 .nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:var(--bg1);border-top:1px solid var(--bd);display:flex;z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative;transition:opacity .2s}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative;transition:opacity .2s;padding:0 4px}
 .ni svg{width:18px;height:18px;stroke:var(--tx2);fill:none;stroke-width:1.5;transition:stroke .2s}
-.ni-lbl{font-size:9px;letter-spacing:.5px;color:var(--tx2);transition:color .2s}
+.ni-lbl{font-size:9px;letter-spacing:.3px;color:var(--tx2);transition:color .2s;text-align:center;line-height:1.4}
 .ni.active svg{stroke:var(--gold)}
 .ni.active .ni-lbl{color:var(--gold)}
 .ni::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .25s}
@@ -314,11 +318,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
   </div>
   <div class="ni" onclick="openSheet('calc')">
     <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
-    <div class="ni-lbl">محاسبه‌گر</div>
+    <div class="ni-lbl">محاسبه نرخ<br>رهن و اجاره</div>
   </div>
   <div class="ni" onclick="openSheet('req')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    <div class="ni-lbl">درخواست</div>
+    <div class="ni-lbl">درخواست<br>ملک‌یابی اختصاصی</div>
   </div>
 </nav>
 
@@ -340,7 +344,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <div class="sheet" id="sh-calc">
   <div class="sh-handle"></div>
   <div class="sh-head">
-    <div class="sh-title">محاسبه‌گر رهن و اجاره</div>
+    <div class="sh-title">محاسبه نرخ رهن و اجاره</div>
     <button class="sh-close" onclick="closeSheets()">&#x2715;</button>
   </div>
   <div class="sh-body">
@@ -368,7 +372,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <div class="sheet" id="sh-req">
   <div class="sh-handle"></div>
   <div class="sh-head">
-    <div class="sh-title">درخواست ملک</div>
+    <div class="sh-title">درخواست ملک‌یابی اختصاصی</div>
     <button class="sh-close" onclick="closeSheets()">&#x2715;</button>
   </div>
   <div class="sh-body">
@@ -445,7 +449,7 @@ function renderCards(list){
   <div class="ph-hood">${p.h}</div>
   <div class="ph-badges">${iH?'<span class="bdg b-hot">HOT</span>':''}<span class="bdg ${iS?'b-sale':'b-rent'}">${p.tm}</span></div>
   <div class="ph-id">${p.id}</div>
-  <div class="ph-cnt">${p.slides.length} تصویر</div>
+  <div class="ph-cnt">📷 ${p.slides.length} تصویر</div>
 </div>
 <div class="card-body">
   <div class="card-title">${p.type_melk}${p.m&&p.m!=='—'?' · '+p.m+' م²':''}</div>
@@ -472,6 +476,10 @@ function renderCards(list){
       <div class="adv-spec">کارشناس منطقه ${p.h}</div>
     </div>
     <button class="adv-chat" onclick="event.stopPropagation();openAI()">مشاوره</button>
+  </div>
+  <div class="card-tap">
+    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    ضربه بزنید — جزئیات کامل و تصاویر
   </div>
 </div></div>`;
   }).join('');
@@ -544,7 +552,7 @@ function openDetail(id){
     <tr><td>آسانسور</td><td>${p.as?'دارد':'ندارد'}</td></tr>
     <tr><td>پارکینگ</td><td>${p.pk?'دارد':'ندارد'}</td></tr>
     <tr><td>انباری</td><td>${p.an?'دارد':'ندارد'}</td></tr>
-    ${p.tz?`<tr><td>توضیدات</td><td>${p.tz}</td></tr>`:''}
+    ${p.tz?`<tr><td>توضیحات</td><td>${p.tz}</td></tr>`:''}
   </table>
   <button class="btn-cta" onclick="openAI()">گفتگو با مشاور هوش مصنوعی — @melkshirazbot</button>
 </div>`;
