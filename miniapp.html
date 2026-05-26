@@ -217,22 +217,22 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <div class="catalog">
   <input class="sinp" id="sinp" type="search" placeholder="جستجو در ملک‌های شیراز..." oninput="onSearch()">
   <div class="chips" id="chips-deal">
-    <button class="chip on" onclick="setF(this,'all')">همه</button>
-    <button class="chip" onclick="setF(this,'فروش')">فروش</button>
-    <button class="chip" onclick="setF(this,'اجاره')">اجاره</button>
-    <button class="chip" onclick="setF(this,'رهن')">رهن</button>
-    <button class="chip" onclick="setF(this,'hot')">فرصت ویژه</button>
+    <button class="chip on" onclick="setF(this,'all'">همه</button>
+    <button class="chip" onclick="setF(this,'فروش'">فروش</button>
+    <button class="chip" onclick="setF(this,'اجاره'">اجاره</button>
+    <button class="chip" onclick="setF(this,'رهن'">رهن</button>
+    <button class="chip" onclick="setF(this,'hot'">فرصت ویژه</button>
   </div>
   <div class="chips" id="chips-type">
-    <button class="chip on" onclick="setTF(this,'all')">همه انواع</button>
-    <button class="chip" onclick="setTF(this,'مسکونی')">مسکونی</button>
-    <button class="chip" onclick="setTF(this,'آپارتمان')">آپارتمان</button>
-    <button class="chip" onclick="setTF(this,'ویلا')">ویلا</button>
-    <button class="chip" onclick="setTF(this,'زمین')">زمین</button>
-    <button class="chip" onclick="setTF(this,'تجاری')">تجاری</button>
+    <button class="chip on" onclick="setTF(this,'all'">همه انواع</button>
+    <button class="chip" onclick="setTF(this,'مسکونی'">مسکونی</button>
+    <button class="chip" onclick="setTF(this,'آپارتمان'">آپارتمان</button>
+    <button class="chip" onclick="setTF(this,'ویلا'">ویلا</button>
+    <button class="chip" onclick="setTF(this,'زمین'">زمین</button>
+    <button class="chip" onclick="setTF(this,'تجاری'">تجاری</button>
   </div>
   <div class="chips" id="chips-hood">
-    <button class="chip on" onclick="setHood(this,'')">همه مناطق</button>
+    <button class="chip on" onclick="setHood(this,''">همه مناطق</button>
   </div>
   <div id="cards-wrap">
     <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:75%"></div></div></div>
@@ -275,8 +275,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
   </div>
   <div class="sh-body">
     <div class="calc-tog">
-      <button class="ctab on" id="t-r" onclick="swC('r')">رهن ← اجاره</button>
-      <button class="ctab" id="t-e" onclick="swC('e')">اجاره ← رهن</button>
+      <button class="ctab on" id="t-r" onclick="swC('r'">رهن ← اجاره</button>
+      <button class="ctab" id="t-e" onclick="swC('e'">اجاره ← رهن</button>
     </div>
     <div id="c-r">
       <div class="fr"><label class="clbl">مبلغ رهن (تومان)</label>
@@ -339,14 +339,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <script>
 'use strict';
 
-// ── CONFIG
-const FILES_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/files.json';
-const SETTINGS_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/settings.json';
+const FILES_URL = 'https://drwuruvvpgalmibjxlnc.supabase.co/functions/v1/vanta-data?type=files';
+const SETTINGS_URL = 'https://drwuruvvpgalmibjxlnc.supabase.co/functions/v1/vanta-data?type=settings';
 const RATES_URL = 'https://call.tgju.org/ajax.json';
 const RATES_KEY = 'vanta_r';
 const RATES_TTL = 60 * 60 * 1000;
 
-// ── STATE
 let allProps = [];
 let settings = {};
 let RATE = 30;
@@ -355,7 +353,6 @@ let autoRef = {};
 let AF = 'all', AT = 'all', AH = '', SQ = '';
 let curSlide = 0, txStart = 0, slideCount = 0;
 
-// ── NUMBER UTILS
 const P_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
 function toAr(s) {
   return String(s).replace(/[۰-۹]/g, c => c.charCodeAt(0) - 0x6F0);
@@ -388,7 +385,6 @@ function numWithComma(n) {
   return n.toLocaleString('fa-IR');
 }
 
-// ── HOOD MAPPING (Shiraz)
 const HOODS_LIST = ['معالی آباد','ارم','خاکشناسی','باغ ناری','فلکه گاز','قصردشت','ابریشمی','تاچارا','صنایع','چمران','زرگری','شهرک بهشتی','شهرک گلستان','شهرک صدرا','بلوار جمهوری'];
 const HOOD_KW = [
   ['شهرک بهشتی','شهرک بهشتی'],['بهشتی','شهرک بهشتی'],['نسترن','شهرک بهشتی'],['بنفشه','شهرک بهشتی'],['شقایق','شهرک بهشتی'],
@@ -417,7 +413,6 @@ function extractHood(addr) {
   return '';
 }
 
-// ── PROCESS PROPERTIES
 function processProps(raw) {
   return (Array.isArray(raw) ? raw : raw.files || []).filter(p => p.status === 'فعال').map(p => {
     const m = parseMetraj(p.metraj);
@@ -432,7 +427,6 @@ function processProps(raw) {
   });
 }
 
-// ── MARKET PULSE
 function calcAutoRef(props) {
   const tot = {}, cnt = {};
   for (const p of props) {
@@ -457,7 +451,6 @@ function renderPulse() {
     </div>`).join('');
 }
 
-// ── TICKER
 function setTick(ids, val, up, dp) {
   for (const id of ids) {
     const vEl = document.getElementById('t-' + id);
@@ -506,13 +499,12 @@ function applyRates(d) {
   if (d.usdt) { const v = numWithComma(Math.round(d.usdt.p / 10)) + ' ت'; setTick(['usdt','usdt2'], v, d.usdt.up, d.usdt.dp); }
 }
 
-// ── LOAD DATA
 async function loadData() {
   const t5 = Math.floor(Date.now() / 300000);
   try {
     const [fRes, sRes] = await Promise.all([
-      fetch(FILES_URL + '?v=' + t5),
-      fetch(SETTINGS_URL + '?v=' + t5)
+      fetch(FILES_URL + '&v=' + t5),
+      fetch(SETTINGS_URL + '&v=' + t5)
     ]);
     const raw = await fRes.json();
     settings = await sRes.json();
@@ -540,7 +532,6 @@ function buildHoodChips() {
     hoods.map(h => `<button class="chip" onclick="setHood(this,'${h}')">${h}</button>`).join('');
 }
 
-// ── FILTER
 function filterProps() {
   const q = SQ.toLowerCase();
   return allProps.filter(p => {
@@ -583,7 +574,6 @@ function filterByHood(h, el) {
 }
 function onSearch() { SQ = document.getElementById('sinp').value || ''; renderCards(filterProps()); }
 
-// ── RENDER CARDS
 function gcls(t) {
   return t === 'آپارتمان' ? 'ga' : t === 'ویلا' ? 'gv' : t === 'زمین' ? 'gl' : 'gc';
 }
@@ -648,7 +638,6 @@ function renderCards(list) {
   }).join('');
 }
 
-// ── DETAIL MODAL
 function slideFor(t) {
   return { 'آپارتمان': ['sa1', 'sa2'], 'ویلا': ['sv1', 'sv2'], 'زمین': ['sl1', 'gl'], 'default': ['sc1', 'gc'] }[t] || ['sc1', 'gc'];
 }
@@ -661,7 +650,6 @@ function openDetail(id) {
   const sHtml = slides.map(s => `<div class="slide ${s}"><div class="slide-wm">VANTA</div></div>`).join('');
   const dotsHtml = slides.length > 1 ? slides.map((_, i) => `<div class="dot${!i ? ' on' : ''}" onclick="goSlide(${i})"></div>`).join('') : '';
   const ini = (p.advName || 'و')[0];
-  const hasAmens = p.asansor || p.parking || p.anbari;
   document.getElementById('mc').innerHTML = `
 <div class="slider-wrap">
   <div class="slider-track" id="sl-track">${sHtml}</div>
@@ -726,11 +714,9 @@ function updDots() {
 }
 function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); }
 
-// ── SHEETS
 function openSheet(id) { closeSheets(); document.getElementById('backdrop').classList.add('open'); document.getElementById('sh-' + id).classList.add('open'); }
 function closeSheets() { document.getElementById('backdrop').classList.remove('open'); document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open')); }
 
-// ── CALCULATOR
 function swC(t) {
   document.getElementById('c-r').style.display = t === 'r' ? 'block' : 'none';
   document.getElementById('c-e').style.display = t === 'e' ? 'block' : 'none';
@@ -740,7 +726,6 @@ function swC(t) {
 function cR() { const v = parseInt(document.getElementById('i-r').value || 0, 10); document.getElementById('res-r').textContent = v ? fmt(Math.round(v / RATE)) + ' تومان' : '—'; }
 function cE() { const v = parseInt(document.getElementById('i-e').value || 0, 10); document.getElementById('res-e').textContent = v ? fmt(v * RATE) + ' تومان' : '—'; }
 
-// ── REQUEST
 function subReq() {
   const n = document.getElementById('rq-n').value.trim();
   const t = document.getElementById('rq-t').value.trim();
@@ -749,7 +734,6 @@ function subReq() {
   showToast('درخواست ثبت شد — مشاور با شما تماس می‌گیرد');
 }
 
-// ── AI
 function openAI() {
   document.getElementById('modal').classList.remove('open');
   const wa = window.Bale?.WebApp || window.Telegram?.WebApp;
@@ -757,14 +741,12 @@ function openAI() {
   else showToast('در حال باز کردن @melkshirazbot ...');
 }
 
-// ── TOAST
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ── INIT
 async function init() {
   const wa = window.Bale?.WebApp || window.Telegram?.WebApp;
   if (wa) { wa.ready(); wa.expand(); }
