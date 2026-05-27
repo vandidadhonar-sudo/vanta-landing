@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>VANTA — پنل مشاور</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080809;--bg1:#0E0E10;--bg2:#141416;--bg3:#1C1C1F;
+  --gold:#C5A459;--gd:#8A6E38;
+  --tx:#D8D8D4;--tx2:#78787A;--bd:rgba(197,164,89,.14);
+  --red:#C0392B;--green:#27AE60;--r:5px;--nav:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;font-size:14px;display:flex;flex-direction:column;height:100dvh}
+
+/* ── Login ── */
+.login-cover{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+.login-logo{font-size:38px;font-weight:800;letter-spacing:6px;color:var(--gold);margin-bottom:6px}
+.login-sub{font-size:11px;color:var(--tx2);letter-spacing:2px;margin-bottom:44px}
+.login-box{width:100%;max-width:340px;background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:24px}
+.login-lbl{font-size:12px;color:var(--tx2);margin-bottom:8px;display:block}
+.login-inp{width:100%;background:var(--bg2);border:1px solid rgba(197,164,89,.15);border-radius:var(--r);color:var(--tx);font-family:'Vazirmatn',sans-serif;font-size:16px;padding:12px 14px;outline:none;margin-bottom:16px;letter-spacing:2px;transition:border .2s;direction:ltr;text-align:center}
+.login-inp:focus{border-color:var(--gd)}
+.login-btn{width:100%;background:linear-gradient(135deg,#D4A843,#C5A459,#9A7A40);color:#000;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:var(--r);cursor:pointer}
+.login-btn:disabled{opacity:.5;cursor:not-allowed}
+.login-err{font-size:12px;color:var(--red);text-align:center;margin-top:10px;min-height:18px}
+.login-lock{font-size:12px;color:var(--gold);text-align:center;margin-top:12px}
+
+/* ── App shell ── */
+.topbar{background:var(--bg1);border-bottom:1px solid var(--bd);height:50px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px}
+.logo{font-size:15px;font-weight:700;letter-spacing:4px;color:var(--gold)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#27AE60;display:inline-block;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hdr-center{flex:1;text-align:center}
+.hdr-date{font-size:11px;color:var(--tx2)}
+.hdr-occasion{font-size:10px;color:var(--gold);margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:6px}
+.hdr-name{font-size:11px;color:var(--gd);font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-btn{background:transparent;border:none;color:var(--tx2);font-size:11px;cursor:pointer;padding:4px 6px;border-radius:3px}
+.logout-btn:hover{color:var(--red)}
+
+/* ── Ticker ── */
+.ticker{background:var(--bg1);border-bottom:1px solid var(--bd);height:28px;overflow:hidden;flex-shrink:0}
+.tk-track{display:flex;align-items:center;height:100%;white-space:nowrap;animation:tkscroll 36s linear infinite;width:max-content}
+.tk-track:hover{animation-play-state:paused}
+@keyframes tkscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:4px;padding:0 14px;font-size:11px;border-right:1px solid rgba(197,164,89,.1)}
+.tl{color:var(--tx2)}.tv{color:var(--tx);font-weight:600}
+.up{color:#27AE60;font-size:9px}.dn{color:var(--red);font-size:9px}
+
+/* ── Quote bar ── */
+.quote-bar{background:var(--bg2);border-bottom:1px solid var(--bd);padding:5px 14px;flex-shrink:0;font-size:11px;color:var(--gd);text-align:center;line-height:1.5;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ── Content ── */
+.content{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:12px 14px calc(var(--nav)+8px);scrollbar-width:none;-webkit-overflow-scrolling:touch;display:none}
+.page::-webkit-scrollbar{display:none}
+.page.active{display:block}
+
+/* ── Bottom Nav ── */
+.nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:var(--bg1);border-top:1px solid var(--bd);display:flex;z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;position:relative;padding:0 2px}
+.ni svg{width:18px;height:18px;stroke:var(--tx2);fill:none;stroke-width:1.5;transition:stroke .2s;flex-shrink:0}
+.ni-lbl{font-size:8.5px;color:var(--tx2);transition:color .2s;text-align:center;line-height:1.3}
+.ni.on svg{stroke:var(--gold)}
+.ni.on .ni-lbl{color:var(--gold)}
+.ni::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .25s}
+.ni.on::before{transform:scaleX(1)}
+
+/* ── Cards ── */
+.card{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--gd)}
+.card-body{padding:12px 13px}
+.card-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.card-sub{font-size:11px;color:var(--tx2);margin-bottom:8px}
+.card-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-price{font-size:15px;font-weight:700;color:var(--gold)}
+.card-price-lbl{font-size:10px;color:var(--tx2)}
+.specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.sp{font-size:11px;color:var(--tx2)}
+.sp b{color:var(--tx);font-weight:500}
+
+/* ── Stat cards ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-card{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;text-align:center}
+.stat-n{font-size:26px;font-weight:700;color:var(--gold)}
+.stat-l{font-size:10px;color:var(--tx2);margin-top:3px}
+.stat-card.green .stat-n{color:var(--green)}
+.stat-card.red .stat-n{color:var(--red)}
+.stat-card.yellow .stat-n{color:#E5A100}
+
+/* ── Section header ── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;margin-top:16px}
+.sec-hdr:first-child{margin-top:0}
+.sec-title{font-size:12px;font-weight:600;color:var(--gd);letter-spacing:1px}
+.sec-more{font-size:11px;color:var(--tx2);cursor:pointer;background:none;border:none}
+.sec-more:hover{color:var(--gold)}
+
+/* ── Chips ── */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{background:transparent;border:1px solid var(--bd);color:var(--tx2);font-family:'Vazirmatn',sans-serif;font-size:11px;padding:5px 12px;border-radius:2px;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.chip.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+
+/* ── Search ── */
+.sinp{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);color:var(--tx);font-family:'Vazirmatn',sans-serif;font-size:13px;padding:9px 13px;outline:none;margin-bottom:8px;transition:border .2s}
+.sinp:focus{border-color:var(--gd)}
+.sinp::placeholder{color:var(--tx2)}
+
+/* ── Badges ── */
+.bdg{font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;display:inline-block}
+.b-sale{background:rgba(197,164,89,.2);color:var(--gold);border:1px solid rgba(197,164,89,.3)}
+.b-rent{background:rgba(80,130,200,.18);color:#7AA8D8;border:1px solid rgba(80,130,200,.28)}
+.b-hot{background:rgba(192,57,43,.25);color:#E05C4C;border:1px solid rgba(192,57,43,.35)}
+.b-stale{background:rgba(229,161,0,.18);color:#E5A100;border:1px solid rgba(229,161,0,.28)}
+.b-sold{background:rgba(120,120,122,.18);color:var(--tx2);border:1px solid rgba(120,120,122,.28)}
+.b-green{background:rgba(39,174,96,.15);color:var(--green);border:1px solid rgba(39,174,96,.2)}
+.b-vip{background:rgba(197,164,89,.3);color:#FFD700;border:1px solid rgba(255,215,0,.4)}
+.b-warm{background:rgba(229,161,0,.15);color:#E5A100;border:1px solid rgba(229,161,0,.25)}
+.b-cold{background:rgba(120,120,122,.12);color:var(--tx2);border:1px solid rgba(120,120,122,.2)}
+
+/* ── Lead card ── */
+.lead-card{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 13px;margin-bottom:8px}
+.lead-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.lead-name{font-size:13px;font-weight:600;color:var(--tx)}
+.lead-phone{font-size:11px;color:var(--gold);direction:ltr;text-align:left}
+.lead-info{font-size:11px;color:var(--tx2);margin-bottom:6px}
+.lead-files{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.lead-file-tag{font-size:10px;background:var(--bg2);border:1px solid var(--bd);color:var(--gd);padding:2px 7px;border-radius:2px;cursor:pointer}
+.lead-bot{display:flex;justify-content:space-between;align-items:center}
+.lead-status-sel{background:var(--bg2);border:1px solid var(--bd);color:var(--tx);font-family:'Vazirmatn',sans-serif;font-size:11px;padding:4px 8px;border-radius:3px;cursor:pointer;outline:none}
+
+/* ── Modal / Sheet ── */
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-wrap.open{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r) var(--r) 0 0;width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;animation:slideUp .28s ease;scrollbar-width:none}
+.modal::-webkit-scrollbar{display:none}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:30px;height:3px;background:var(--bd);border-radius:2px;margin:11px auto 0}
+.mbody{padding:16px}
+.m-title{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.m-sub{font-size:11px;color:var(--gold);margin-bottom:14px}
+.dtbl{width:100%;border-collapse:collapse;margin-bottom:14px}
+.dtbl td{padding:7px 0;font-size:12px;border-bottom:1px solid rgba(197,164,89,.06)}
+.dtbl td:first-child{color:var(--tx2);width:38%}
+.dtbl td:last-child{color:var(--tx);font-weight:500;text-align:left;direction:ltr}
+.btn-gold{width:100%;background:var(--gold);color:#000;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:700;padding:12px;border:none;border-radius:var(--r);cursor:pointer;margin-bottom:8px}
+.btn-outline{width:100%;background:transparent;color:var(--gd);font-family:'Vazirmatn',sans-serif;font-size:13px;padding:11px;border:1px solid var(--bd);border-radius:var(--r);cursor:pointer;margin-bottom:8px}
+.btn-red{background:rgba(192,57,43,.15);color:var(--red);border:1px solid rgba(192,57,43,.3)}
+
+/* ── Forms ── */
+.fr{margin-bottom:11px}
+.fl{font-size:11px;color:var(--tx2);margin-bottom:5px;display:block}
+.fi,.fs,.ft{width:100%;background:var(--bg2);border:1px solid rgba(197,164,89,.12);border-radius:4px;color:var(--tx);font-family:'Vazirmatn',sans-serif;font-size:13px;padding:9px 11px;outline:none;transition:border .2s}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--gd)}
+.fi::placeholder,.ft::placeholder{color:var(--tx2);font-size:12px}
+.fs{appearance:none;cursor:pointer}
+.ft{resize:none;min-height:70px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.form-title{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.sheet-close{float:left;background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center}
+
+/* ── Photo gallery ── */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.photo-thumb{aspect-ratio:1;border-radius:4px;overflow:hidden;position:relative;background:var(--bg2)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:4px;left:4px;background:rgba(192,57,43,.85);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.upload-btn{background:var(--bg2);border:2px dashed rgba(197,164,89,.25);border-radius:4px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:var(--tx2);font-size:10px}
+.upload-btn svg{width:20px;height:20px;stroke:var(--gd);fill:none;stroke-width:1.5}
+
+/* ── Divar text ── */
+.divar-box{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px;font-size:12px;color:var(--tx);line-height:1.8;direction:rtl;white-space:pre-wrap;margin-bottom:12px;max-height:160px;overflow-y:auto;scrollbar-width:none}
+
+/* ── Price intel ── */
+.intel-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+.intel-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(197,164,89,.06)}
+.intel-row:last-child{border:none}
+.intel-lbl{color:var(--tx2)}
+.intel-val{color:var(--tx);font-weight:500}
+.intel-diff{font-size:10px;padding:1px 7px;border-radius:2px}
+.diff-up{background:rgba(192,57,43,.15);color:var(--red)}
+.diff-dn{background:rgba(39,174,96,.12);color:var(--green)}
+.diff-eq{background:rgba(197,164,89,.1);color:var(--gd)}
+
+/* ── Visit card ── */
+.visit-card{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 13px;margin-bottom:8px}
+.visit-top{display:flex;justify-content:space-between;margin-bottom:7px}
+.visit-name{font-size:13px;font-weight:600;color:var(--tx)}
+.visit-date{font-size:11px;color:var(--gd)}
+.visit-files{font-size:11px;color:var(--tx2)}
+
+/* ── Skeletons ── */
+.sk{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:3px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-card{background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.sk-line{height:12px}
+.sk-line.w50{width:50%}.sk-line.w70{width:70%}.sk-line.w35{width:35%}
+
+/* ── Commission ── */
+.comm-box{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px;text-align:center;margin-bottom:10px}
+.comm-n{font-size:22px;font-weight:700;color:var(--gold)}
+.comm-l{font-size:10px;color:var(--tx2);margin-top:3px}
+
+/* ── Pipeline ── */
+.pipeline{display:flex;gap:0;margin-bottom:14px}
+.pp{flex:1;text-align:center;font-size:9px;color:var(--tx2);padding:6px 2px;border-bottom:2px solid var(--bg3);transition:all .2s}
+.pp.done{color:var(--gold);border-color:var(--gold)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:calc(var(--nav)+10px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--bg2);border:1px solid var(--bd);color:var(--tx);font-size:12px;padding:8px 20px;border-radius:3px;z-index:400;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-overflow:ellipsis;overflow:hidden}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Empty state ── */
+.empty{text-align:center;padding:50px 16px;color:var(--tx2);font-size:12px;line-height:2}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ LOGIN PAGE ════════════════ -->
+<div id="login-page" class="login-cover">
+  <div class="login-logo">VANTA</div>
+  <div class="login-sub">ADVISOR PANEL</div>
+  <div class="login-box">
+    <label class="login-lbl">رمز مشاور یا سرپرست را وارد کنید</label>
+    <input id="login-inp" class="login-inp" type="password" placeholder="hadibakhtzadeh..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <button id="login-btn" class="login-btn" onclick="doLogin()">ورود</button>
+    <div id="login-err" class="login-err"></div>
+    <div id="login-lock" class="login-lock"></div>
+  </div>
+</div>
+
+<!-- ════════════════ MAIN APP ════════════════ -->
+<div id="app" style="display:none;flex-direction:column;height:100dvh">
+
+  <!-- Header -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="logo">VANTA</div>
+      <span class="live-dot"></span>
+    </div>
+    <div class="hdr-center">
+      <div class="hdr-date" id="hdr-date">—</div>
+      <div class="hdr-occasion" id="hdr-occasion"></div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-name" id="hdr-name"></span>
+      <button class="logout-btn" onclick="doLogout()" title="خروج">✕</button>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="tk-track" id="tk-track">
+      <div class="ti"><span class="tl">دلار</span><span class="tv" id="tk-dollar">—</span><span id="tk-dollar-d"></span></div>
+      <div class="ti"><span class="tl">طلا ۱۸</span><span class="tv" id="tk-gold">—</span><span id="tk-gold-d"></span></div>
+      <div class="ti"><span class="tl">سکه</span><span class="tv" id="tk-coin">—</span><span id="tk-coin-d"></span></div>
+      <div class="ti"><span class="tl">بیتکوین</span><span class="tv" id="tk-btc">—</span><span id="tk-btc-d"></span></div>
+      <div class="ti"><span class="tl">تتر</span><span class="tv" id="tk-usdt">—</span><span id="tk-usdt-d"></span></div>
+      <div class="ti"><span class="tl">دلار</span><span class="tv" id="tk-dollar2">—</span><span id="tk-dollar2-d"></span></div>
+      <div class="ti"><span class="tl">طلا ۱۸</span><span class="tv" id="tk-gold2">—</span><span id="tk-gold2-d"></span></div>
+      <div class="ti"><span class="tl">سکه</span><span class="tv" id="tk-coin2">—</span><span id="tk-coin2-d"></span></div>
+      <div class="ti"><span class="tl">بیتکوین</span><span class="tv" id="tk-btc2">—</span><span id="tk-btc-d2"></span></div>
+      <div class="ti"><span class="tl">تتر</span><span class="tv" id="tk-usdt2">—</span><span id="tk-usdt2-d"></span></div>
+    </div>
+  </div>
+
+  <!-- Quote bar -->
+  <div class="quote-bar" id="quote-bar">در حال بارگذاری...</div>
+
+  <!-- Pages container -->
+  <div class="content">
+
+    <!-- ── Page: Dashboard ── -->
+    <div id="pg-home" class="page active">
+      <div id="home-content">
+        <div class="sk-card"><div class="sk sk-line w70"></div><div class="sk sk-line w50"></div><div class="sk sk-line w35"></div></div>
+      </div>
+    </div>
+
+    <!-- ── Page: My Files ── -->
+    <div id="pg-myfiles" class="page">
+      <input class="sinp" id="myfiles-search" type="search" placeholder="جستجو در فایل‌های من..." oninput="filterMyFiles()">
+      <div class="chips" id="myfiles-chips">
+        <button class="chip on" onclick="setMyFileFilter(this,'all')">همه</button>
+        <button class="chip" onclick="setMyFileFilter(this,'فعال')">فعال</button>
+        <button class="chip" onclick="setMyFileFilter(this,'راکد')">راکد</button>
+        <button class="chip" onclick="setMyFileFilter(this,'فروخته')">فروخته</button>
+        <button class="chip" onclick="setMyFileFilter(this,'فروش')">فروش</button>
+        <button class="chip" onclick="setMyFileFilter(this,'اجاره')">اجاره</button>
+        <button class="chip" onclick="setMyFileFilter(this,'hot')">🔥 داغ</button>
+      </div>
+      <div id="myfiles-list"></div>
+    </div>
+
+    <!-- ── Page: All Files ── -->
+    <div id="pg-allfiles" class="page">
+      <input class="sinp" id="allfiles-search" type="search" placeholder="جستجو در فایل‌های همکاران..." oninput="filterAllFiles()">
+      <div class="chips" id="allfiles-chips">
+        <button class="chip on" onclick="setAllFileFilter(this,'all')">همه</button>
+        <button class="chip" onclick="setAllFileFilter(this,'فروش')">فروش</button>
+        <button class="chip" onclick="setAllFileFilter(this,'اجاره')">اجاره</button>
+        <button class="chip" onclick="setAllFileFilter(this,'آپارتمان')">آپارتمان</button>
+        <button class="chip" onclick="setAllFileFilter(this,'ویلا')">ویلا</button>
+        <button class="chip" onclick="setAllFileFilter(this,'زمین')">زمین</button>
+      </div>
+      <div id="allfiles-list"></div>
+    </div>
+
+    <!-- ── Page: Buyers ── -->
+    <div id="pg-buyers" class="page">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx)">خریداران من</div>
+        <button class="btn-gold" style="width:auto;padding:7px 16px;font-size:12px" onclick="openBuyerForm()">+ ثبت خریدار</button>
+      </div>
+      <div id="buyers-list"></div>
+    </div>
+
+    <!-- ── Page: Visits ── -->
+    <div id="pg-visits" class="page">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:var(--tx)">بازدیدها</div>
+        <button class="btn-gold" style="width:auto;padding:7px 16px;font-size:12px" onclick="openVisitForm()">+ بازدید جدید</button>
+      </div>
+      <div id="visits-list"></div>
+    </div>
+
+    <!-- ── Page: Leads ── -->
+    <div id="pg-leads" class="page">
+      <div class="chips" id="leads-chips">
+        <button class="chip on" onclick="setLeadFilter(this,'all')">همه</button>
+        <button class="chip" onclick="setLeadFilter(this,'VIP')">👑 VIP</button>
+        <button class="chip" onclick="setLeadFilter(this,'hot')">🔥 داغ</button>
+        <button class="chip" onclick="setLeadFilter(this,'warm')">⚡ گرم</button>
+        <button class="chip" onclick="setLeadFilter(this,'در پیگیری')">در پیگیری</button>
+        <button class="chip" onclick="setLeadFilter(this,'جدید')">جدید</button>
+      </div>
+      <div id="leads-list"></div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Bottom Navigation -->
+  <nav class="nav">
+    <div class="ni on" id="ni-home" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <div class="ni-lbl">خانه</div>
+    </div>
+    <div class="ni" id="ni-myfiles" onclick="showPage('myfiles')">
+      <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      <div class="ni-lbl">فایل‌های من</div>
+    </div>
+    <div class="ni" id="ni-allfiles" onclick="showPage('allfiles')">
+      <svg viewBox="0 0 24 24"><circle cx="17" cy="21" r="1"/><circle cx="7" cy="21" r="1"/><path d="M17 8V5H3v16"/><path d="M21 8H9a2 2 0 00-2 2v4a2 2 0 002 2h12a2 2 0 002-2v-4a2 2 0 00-2-2z"/></svg>
+      <div class="ni-lbl">همکاران</div>
+    </div>
+    <div class="ni" id="ni-buyers" onclick="showPage('buyers')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <div class="ni-lbl">خریداران</div>
+    </div>
+    <div class="ni" id="ni-visits" onclick="showPage('visits')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="ni-lbl">بازدیدها</div>
+    </div>
+    <div class="ni" id="ni-leads" onclick="showPage('leads')">
+      <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <div class="ni-lbl">لیدها</div>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- ════ File Detail Modal ════ -->
+<div class="modal-wrap" id="file-modal" onclick="closeFileModal(event)">
+  <div class="modal" id="file-modal-box">
+    <div class="mhandle"></div>
+    <div id="file-modal-content"></div>
+  </div>
+</div>
+
+<!-- ════ Buyer Form Sheet ════ -->
+<div class="modal-wrap" id="buyer-sheet" onclick="closeBuyerSheet(event)">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mbody">
+      <div class="form-title">ثبت خریدار جدید <button class="sheet-close" onclick="closeBuyerSheet()">✕</button></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">نام</label><input class="fi" id="b-name" type="text" placeholder="نام خریدار"></div>
+        <div class="fr"><label class="fl">تلفن</label><input class="fi" id="b-tel" type="tel" placeholder="09..." dir="ltr"></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">نوع مشتری</label>
+          <select class="fs" id="b-type"><option>مصرفی</option><option>سرمایه‌گذار</option></select>
+        </div>
+        <div class="fr"><label class="fl">نوع معامله</label>
+          <select class="fs" id="b-deal"><option>خرید</option><option>اجاره</option><option>رهن</option></select>
+        </div>
+      </div>
+      <div class="fr"><label class="fl">بودجه (تومان یا میلیون)</label><input class="fi" id="b-budget" type="text" placeholder="مثال: ۵ میلیارد یا 5000"></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">متراژ حداقل</label><input class="fi" id="b-mmin" type="number" placeholder="مثال: 100"></div>
+        <div class="fr"><label class="fl">متراژ حداکثر</label><input class="fi" id="b-mmax" type="number" placeholder="مثال: 150"></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">تعداد خواب</label><input class="fi" id="b-khab" type="number" placeholder="2"></div>
+        <div class="fr"><label class="fl">فوریت</label>
+          <select class="fs" id="b-urgency"><option>فوری</option><option>عادی</option><option>بلندمدت</option></select>
+        </div>
+      </div>
+      <div class="fr"><label class="fl">محله مورد نظر</label>
+        <select class="fs" id="b-hood">
+          <option value="">فرقی ندارد</option>
+          <option>معالی آباد</option><option>ارم</option><option>خاکشناسی</option>
+          <option>باغ ناری</option><option>فلکه گاز</option><option>قصردشت</option>
+          <option>ابریشمی</option><option>تاچارا</option><option>صنایع</option>
+          <option>چمران</option><option>زرگری</option><option>شهرک بهشتی</option>
+          <option>شهرک گلستان</option><option>شهرک صدرا</option><option>بلوار جمهوری</option>
+        </select>
+      </div>
+      <div class="fr"><label class="fl">یادداشت</label><textarea class="ft" id="b-notes" placeholder="توضیحات، شرایط خاص..."></textarea></div>
+      <div class="fr"><label class="fl">تاریخ پیگیری بعدی</label><input class="fi" id="b-followup" type="text" placeholder="مثال: ۱۴۰۵/۰۴/۰۱"></div>
+      <button class="btn-gold" onclick="submitBuyer()">ثبت خریدار</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ Visit Form Sheet ════ -->
+<div class="modal-wrap" id="visit-sheet" onclick="closeVisitSheet(event)">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mbody">
+      <div class="form-title">ثبت بازدید جدید <button class="sheet-close" onclick="closeVisitSheet()">✕</button></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">نام خریدار</label><input class="fi" id="v-bname" type="text" placeholder="نام"></div>
+        <div class="fr"><label class="fl">تلفن خریدار</label><input class="fi" id="v-btel" type="tel" placeholder="09..." dir="ltr"></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">تاریخ بازدید</label><input class="fi" id="v-date" type="text" placeholder="۱۴۰۵/۰۳/۱۵"></div>
+        <div class="fr"><label class="fl">ساعت</label><input class="fi" id="v-time" type="text" placeholder="۱۰:۳۰" dir="ltr"></div>
+      </div>
+      <div class="fr"><label class="fl">شماره فایل‌ها (با ویرگول جدا کنید)</label><input class="fi" id="v-files" type="text" placeholder="3, 7, 12" dir="ltr"></div>
+      <button class="btn-gold" onclick="submitVisit()">ثبت بازدید</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+const API   = 'https://vanta-filing-bot-production.up.railway.app';
+const FA    = '۰۱۲۳۴۵۶۷۸۹';
+
+let TOKEN   = localStorage.getItem('va_tok') || '';
+let USER    = {};
+try { USER  = JSON.parse(localStorage.getItem('va_user') || '{}'); } catch(e){}
+
+let _myFiles  = [], _allFiles = [], _buyers = [], _visits = [], _leads = [];
+let _myFileF  = 'all', _allFileF = 'all', _leadF = 'all';
+let _lockTimer = null;
+
+// ── Number helpers ─────────────────────────────────────────────────────────
+function toFa(n) {
+  return String(Math.round(n)).replace(/\d/g, d => FA[d]);
+}
+function fmt(n) {
+  if (!n || isNaN(n)) return '—';
+  n = Number(n);
+  if (n >= 1e9) return toFa(+(n/1e9).toFixed(1)) + ' م.ت';
+  if (n >= 1e6) return toFa(Math.round(n/1e6)) + 'م';
+  return toFa(n);
+}
+function fmtComma(n) {
+  return Number(n).toLocaleString('fa-IR');
+}
+
+// ── API wrapper ────────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const headers = {'Authorization': 'Bearer ' + TOKEN, ...(opts.headers || {})};
+  if (!(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  try {
+    const r = await fetch(API + path, {...opts, headers});
+    if (r.status === 401) { doLogout(); return {ok:false,msg:'توکن منقضی'}; }
+    return r.json();
+  } catch(e) {
+    return {ok:false, msg: 'خطای شبکه: ' + e.message};
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const code = document.getElementById('login-inp').value.trim();
+  if (!code) return;
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = '...';
+  const r = await fetch(API + '/api/advisor/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({code})
+  }).then(x => x.json()).catch(e => ({ok:false, msg:'خطای اتصال'}));
+
+  if (r.ok) {
+    TOKEN = r.token;
+    USER  = {name: r.name, role: r.role, code: r.code || ''};
+    localStorage.setItem('va_tok',  TOKEN);
+    localStorage.setItem('va_user', JSON.stringify(USER));
+    startApp();
+  } else {
+    document.getElementById('login-err').textContent = r.msg || 'خطای ورود';
+    if (r.locked) startLockCountdown(r.remaining || 900);
+    btn.disabled = false; btn.textContent = 'ورود';
+  }
+}
+
+function startLockCountdown(sec) {
+  clearInterval(_lockTimer);
+  const el = document.getElementById('login-lock');
+  function update() {
+    if (sec <= 0) { el.textContent = ''; clearInterval(_lockTimer); return; }
+    el.textContent = `قفل: ${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
+    sec--;
+  }
+  update(); _lockTimer = setInterval(update, 1000);
+}
+
+document.getElementById('login-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── Logout ────────────────────────────────────────────────────────────────
+function doLogout() {
+  TOKEN = ''; USER = {};
+  localStorage.removeItem('va_tok');
+  localStorage.removeItem('va_user');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-inp').value = '';
+  document.getElementById('login-err').textContent = '';
+}
+
+// ── Start app ─────────────────────────────────────────────────────────────
+function startApp() {
+  document.getElementById('login-page').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  document.getElementById('hdr-name').textContent = USER.name || '';
+  showPage('home');
+  loadPrices();
+  loadQuote();
+  updateDate();
+}
+
+// ── Page navigation ───────────────────────────────────────────────────────
+const PAGES = ['home','myfiles','allfiles','buyers','visits','leads'];
+function showPage(name) {
+  PAGES.forEach(p => {
+    document.getElementById('pg-' + p).classList.toggle('active', p === name);
+    const ni = document.getElementById('ni-' + p);
+    if (ni) ni.classList.toggle('on', p === name);
+  });
+  if (name === 'home')     loadHome();
+  if (name === 'myfiles')  loadMyFiles();
+  if (name === 'allfiles') loadAllFiles();
+  if (name === 'buyers')   loadBuyers();
+  if (name === 'visits')   loadVisits();
+  if (name === 'leads')    loadLeads();
+}
+
+// ── Header date ───────────────────────────────────────────────────────────
+function updateDate() {
+  // Use Iran local time (UTC+3:30)
+  const now = new Date(Date.now() + (3.5 * 3600 * 1000));
+  const days_fa = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+  // Jalali conversion (approximate)
+  const g = [now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate()];
+  const j  = gToJ(g[0], g[1], g[2]);
+  const dow = days_fa[now.getUTCDay()];
+  const dateStr = toFa(j[0]) + '/' + toFa(j[1]).padStart(2,'0') + '/' + toFa(j[2]).padStart(2,'0');
+  document.getElementById('hdr-date').textContent = dow + '  ' + dateStr;
+  const occ = getOccasion(j[1], j[2]);
+  const occEl = document.getElementById('hdr-occasion');
+  if (occ) { occEl.textContent = '🌸 ' + occ; occEl.style.display = ''; }
+  else occ === null ? occEl.style.display = 'none' : (occEl.textContent = '');
+}
+
+function gToJ(gy, gm, gd) {
+  const g_d_no = 365 * gy + div(gy+3, 4) - div(gy+99, 100) + div(gy+399, 400);
+  const jd = g_d_no + [0,31,59+leap(gy),90+leap(gy),120+leap(gy),151+leap(gy),181+leap(gy),212+leap(gy),243+leap(gy),273+leap(gy),304+leap(gy),334+leap(gy)][gm-1] + gd - 1948321;
+  let j_y = div(33*jd+3, 12053);
+  let jd2 = jd - 365*j_y - div(j_y, 4) + 286;
+  let j_m = jd2 <= 186 ? div(jd2, 31)+1 : div(jd2-6, 30)+7;
+  let j_d = jd2 - (j_m <= 6 ? 31*(j_m-1) : 30*(j_m-7)+186);
+  return [j_y + 1374, j_m, j_d];
+}
+function div(a,b) { return Math.floor(a/b); }
+function leap(y) { return (y%4===0 && y%100!==0) || y%400===0 ? 1 : 0; }
+
+const OCCASIONS = {
+  '1-1': 'عید نوروز', '1-12': 'روز جمهوری اسلامی', '1-13': 'سیزده‌بدر',
+  '3-14': 'رحلت امام خمینی', '3-15': 'قیام ۱۵ خرداد',
+  '6-31': 'آغاز دفاع مقدس', '7-13': 'روز ملی', '8-22': 'روز دانش‌آموز',
+  '10-5': 'روز بسیج', '11-22': 'پیروزی انقلاب', '12-29': 'روز ملی شدن نفت',
+};
+function getOccasion(m, d) {
+  return OCCASIONS[m + '-' + d] || null;
+}
+
+// ── Ticker / prices ───────────────────────────────────────────────────────
+async function loadPrices() {
+  const cached = sessionStorage.getItem('va_prices');
+  if (cached) try { applyPrices(JSON.parse(cached)); return; } catch(e){}
+  const r = await api('/api/market/prices');
+  if (r.ok && r.prices) {
+    applyPrices(r.prices);
+    sessionStorage.setItem('va_prices', JSON.stringify(r.prices));
+    setTimeout(loadPrices, 3600000);
+  }
+}
+function setTk(ids, val, up, dp) {
+  for (const id of ids) {
+    const ve = document.getElementById('tk-' + id);
+    const de = document.getElementById('tk-' + id + '-d');
+    if (ve) ve.textContent = val;
+    if (de) { de.textContent = (up ? '▲' : '▼') + dp + '٪'; de.className = up ? 'up' : 'dn'; }
+  }
+}
+function applyPrices(p) {
+  if (!p) return;
+  if (p.dollar) { const v = fmtComma(Math.round(p.dollar.p/10)) + ' ت'; setTk(['dollar','dollar2'], v, p.dollar.up, p.dollar.dp); }
+  if (p.gold18) { const v = fmt(p.gold18.p > 1e6 ? Math.round(p.gold18.p/10) : p.gold18.p) + '/گ'; setTk(['gold','gold2'], v, p.gold18.up, p.gold18.dp); }
+  if (p.coin)   { setTk(['coin','coin2'], fmt(Math.round(p.coin.p/10)) + ' ت', p.coin.up, p.coin.dp); }
+  if (p.btc)    { setTk(['btc','btc2'], '$' + Math.round(p.btc.p).toLocaleString(), p.btc.up, p.btc.dp); }
+  if (p.usdt)   { setTk(['usdt','usdt2'], fmtComma(Math.round(p.usdt.p/10)) + ' ت', p.usdt.up, p.usdt.dp); }
+}
+
+async function loadQuote() {
+  const r = await api('/api/market/quote');
+  if (r.ok && r.quote) document.getElementById('quote-bar').textContent = '« ' + r.quote + ' »';
+}
+
+// ── Home / Dashboard ──────────────────────────────────────────────────────
+async function loadHome() {
+  document.getElementById('home-content').innerHTML = skeletonCards(3);
+  const r = await api('/api/advisor/dashboard');
+  if (!r.ok) { document.getElementById('home-content').innerHTML = errMsg(r.msg); return; }
+  updateDate();
+  if (r.now) {
+    const parts = r.now.split(' ')[0];
+    document.getElementById('hdr-date').textContent = parts;
+  }
+  renderHome(r);
+}
+
+function renderHome(r) {
+  const s = r.stats;
+  const isSup = r.role === 'supervisor';
+
+  let html = '';
+
+  if (!isSup) {
+    // Advisor dashboard
+    html += `<div class="stats-grid">
+      <div class="stat-card green"><div class="stat-n">${toFa(s.active)}</div><div class="stat-l">فایل فعال</div></div>
+      <div class="stat-card yellow"><div class="stat-n">${toFa(s.stale)}</div><div class="stat-l">راکد &gt;۴۵ روز</div></div>
+      <div class="stat-card"><div class="stat-n">${toFa(s.sold)}</div><div class="stat-l">فروخته</div></div>
+      <div class="stat-card green"><div class="stat-n">${toFa(s.buyers)}</div><div class="stat-l">خریدار فعال</div></div>
+    </div>`;
+
+    // Price intel
+    if (r.price_intel && r.price_intel.my_avg) {
+      const pi = r.price_intel;
+      html += `<div class="sec-hdr"><div class="sec-title">هوش قیمت</div></div>
+        <div class="intel-card">
+          <div class="intel-row"><span class="intel-lbl">میانگین قیمت فایل‌های شما</span><span class="intel-val">${fmt(pi.my_avg)}/م²</span></div>`;
+      for (const [hood, ref] of Object.entries(pi.market_ref || {})) {
+        const diff = Math.round((pi.my_avg - ref) / ref * 100);
+        const cls  = diff > 8 ? 'diff-up' : diff < -8 ? 'diff-dn' : 'diff-eq';
+        const sign = diff > 0 ? '+' : '';
+        html += `<div class="intel-row"><span class="intel-lbl">${hood}</span><span class="intel-val">${fmt(ref)}/م² <span class="intel-diff ${cls}">${sign}${toFa(diff)}٪</span></span></div>`;
+      }
+      html += `</div>`;
+    }
+
+    // Leads this week
+    html += `<div class="sec-hdr"><div class="sec-title">⚡ لیدهای این هفته</div><div class="stat-n" style="font-size:14px;color:var(--gold)">${toFa(r.week_leads_count || 0)}</div></div>`;
+    if (r.my_leads && r.my_leads.length) {
+      html += r.my_leads.slice(0,5).map(l => miniLeadCard(l)).join('');
+      if (r.my_leads.length > 5) html += `<button class="btn-outline" onclick="showPage('leads')">مشاهده همه لیدها</button>`;
+    } else {
+      html += `<div style="font-size:12px;color:var(--tx2);text-align:center;padding:16px">هنوز لیدی برای شما ثبت نشده</div>`;
+    }
+
+    // Recent visits
+    if (r.recent_visits && r.recent_visits.length) {
+      html += `<div class="sec-hdr"><div class="sec-title">آخرین بازدیدها</div></div>`;
+      html += r.recent_visits.map(v => miniVisitCard(v)).join('');
+    }
+
+    // Rank
+    if (r.rank) {
+      html += `<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px;text-align:center;margin-top:12px">
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">رتبه شما در بین مشاوران</div>
+        <div style="font-size:28px;font-weight:700;color:var(--gold)">${toFa(r.rank)} <span style="font-size:14px;color:var(--tx2)">از ${toFa(r.total_advisors)}</span></div>
+      </div>`;
+    }
+
+  } else {
+    // Supervisor dashboard
+    html += `<div class="stats-grid">
+      <div class="stat-card green"><div class="stat-n">${toFa(s.active)}</div><div class="stat-l">فایل فعال</div></div>
+      <div class="stat-card"><div class="stat-n">${toFa(s.total_files)}</div><div class="stat-l">کل فایل‌ها</div></div>
+      <div class="stat-card"><div class="stat-n">${toFa(s.total_leads)}</div><div class="stat-l">کل لیدها</div></div>
+      <div class="stat-card red"><div class="stat-n">${toFa(s.hot_leads)}</div><div class="stat-l">لید داغ</div></div>
+      <div class="stat-card"><div class="stat-n">${toFa(s.total_advisors)}</div><div class="stat-l">مشاور فعال</div></div>
+      <div class="stat-card"><div class="stat-n">${toFa(s.total_buyers)}</div><div class="stat-l">خریدار ثبت‌شده</div></div>
+    </div>`;
+
+    // Advisor breakdown
+    if (r.advisor_breakdown && r.advisor_breakdown.length) {
+      html += `<div class="sec-hdr"><div class="sec-title">عملکرد مشاوران</div></div>`;
+      const sorted = [...r.advisor_breakdown].sort((a,b) => b.active - a.active);
+      html += `<div style="background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:12px">`;
+      sorted.forEach((adv,i) => {
+        html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;${i?'border-top:1px solid rgba(197,164,89,.06)':''}">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--tx)">${adv.name}</div>
+            <div style="font-size:10px;color:var(--tx2)">${adv.code}</div>
+          </div>
+          <div style="display:flex;gap:10px;text-align:center">
+            <div><div style="font-size:14px;font-weight:700;color:var(--green)">${toFa(adv.active)}</div><div style="font-size:9px;color:var(--tx2)">فعال</div></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--gold)">${toFa(adv.sold)}</div><div style="font-size:9px;color:var(--tx2)">فروخته</div></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--tx2)">${toFa(adv.stale)}</div><div style="font-size:9px;color:var(--tx2)">راکد</div></div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Recent leads
+    if (r.recent_leads && r.recent_leads.length) {
+      html += `<div class="sec-hdr"><div class="sec-title">آخرین لیدها</div><button class="sec-more" onclick="showPage('leads')">همه ←</button></div>`;
+      html += r.recent_leads.slice(0,8).map(l => miniLeadCard(l)).join('');
+    }
+  }
+
+  // Quote
+  if (r.daily_quote) {
+    html += `<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-top:14px;text-align:center">
+      <div style="font-size:9px;color:var(--gd);letter-spacing:1px;margin-bottom:6px">سخن روز</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.9">${r.daily_quote}</div>
+    </div>`;
+  }
+
+  document.getElementById('home-content').innerHTML = html;
+}
+
+function miniLeadCard(l) {
+  const badge = scoreClass(l.score_badge || l.score);
+  return `<div class="lead-card" style="margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+      <span style="font-size:12px;font-weight:600;color:var(--tx)">${esc(l.name||'ناشناس')}</span>
+      <span class="bdg ${badge.cls}">${badge.icon} ${badge.lbl}</span>
+    </div>
+    <div style="font-size:11px;color:var(--tx2)">${esc(l.deal_type||'')} · ${esc(l.prop_type||'')} · ${esc(l.hood||'')} · ${toFa(l.contact_count||0)} تماس</div>
+    <div style="font-size:10px;color:var(--gd);margin-top:4px">${esc(l.status||'')}</div>
+  </div>`;
+}
+
+function miniVisitCard(v) {
+  const files = (v.files_info||[]).map(f => f.hood||'').filter(Boolean).join('، ') || 
+                (v.files_planned||[]).map(id => 'فایل '+toFa(id)).join('، ');
+  return `<div class="visit-card">
+    <div class="visit-top">
+      <span class="visit-name">${esc(v.buyer_name||'—')}</span>
+      <span class="visit-date">${esc(v.visit_date||'')} ${esc(v.visit_time||'')}</span>
+    </div>
+    <div class="visit-files">${files || 'بدون فایل'}</div>
+  </div>`;
+}
+
+// ── My Files ──────────────────────────────────────────────────────────────
+async function loadMyFiles() {
+  document.getElementById('myfiles-list').innerHTML = skeletonCards(4);
+  const r = await api('/api/advisor/files');
+  if (!r.ok) { document.getElementById('myfiles-list').innerHTML = errMsg(r.msg); return; }
+  _myFiles = r.files || [];
+  renderMyFiles();
+}
+function setMyFileFilter(el, val) {
+  document.querySelectorAll('#myfiles-chips .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on'); _myFileF = val; renderMyFiles();
+}
+function filterMyFiles() { renderMyFiles(); }
+function renderMyFiles() {
+  const q = (document.getElementById('myfiles-search').value || '').toLowerCase();
+  const list = _myFiles.filter(f => {
+    if (_myFileF === 'hot' && f.lead_score !== 'hot') return false;
+    if (_myFileF === 'فعال' && f.status !== 'فعال') return false;
+    if (_myFileF === 'راکد' && f.status !== 'راکد') return false;
+    if (_myFileF === 'فروخته' && f.status !== 'فروخته') return false;
+    if (_myFileF === 'فروش' && f.type_moameleh !== 'فروش') return false;
+    if (_myFileF === 'اجاره' && !['اجاره','رهن'].includes(f.type_moameleh)) return false;
+    if (q) {
+      const s = [f.hood,f.type_melk,f.type_moameleh,f.tozih||'',f.addr||''].join(' ').toLowerCase();
+      if (!s.includes(q)) return false;
+    }
+    return true;
+  });
+  const el = document.getElementById('myfiles-list');
+  if (!list.length) { el.innerHTML = `<div class="empty">فایلی یافت نشد</div>`; return; }
+  el.innerHTML = list.map(f => fileCard(f, true)).join('');
+}
+
+// ── All Files ─────────────────────────────────────────────────────────────
+async function loadAllFiles() {
+  document.getElementById('allfiles-list').innerHTML = skeletonCards(5);
+  const r = await api('/api/advisor/all-files');
+  if (!r.ok) { document.getElementById('allfiles-list').innerHTML = errMsg(r.msg); return; }
+  _allFiles = r.files || [];
+  renderAllFiles();
+}
+function setAllFileFilter(el, val) {
+  document.querySelectorAll('#allfiles-chips .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on'); _allFileF = val; renderAllFiles();
+}
+function filterAllFiles() { renderAllFiles(); }
+function renderAllFiles() {
+  const q = (document.getElementById('allfiles-search').value || '').toLowerCase();
+  const list = _allFiles.filter(f => {
+    if (_allFileF !== 'all') {
+      if (['فروش','اجاره','رهن'].includes(_allFileF) && f.type_moameleh !== _allFileF) return false;
+      if (['آپارتمان','ویلا','زمین','تجاری'].includes(_allFileF) && f.type_melk !== _allFileF) return false;
+    }
+    if (q) {
+      const s = [f.hood,f.type_melk,f.type_moameleh,f.advisor_name||''].join(' ').toLowerCase();
+      if (!s.includes(q)) return false;
+    }
+    return true;
+  });
+  const el = document.getElementById('allfiles-list');
+  if (!list.length) { el.innerHTML = `<div class="empty">فایلی یافت نشد</div>`; return; }
+  el.innerHTML = list.map(f => fileCard(f, false)).join('');
+}
+
+// ── File card renderer ─────────────────────────────────────────────────────
+function fileCard(f, isMine) {
+  const isSale = f.type_moameleh === 'فروش';
+  const p1     = parsePrice1(f.price1);
+  const p2     = parsePrice2(f.price2, p1, parseNum(f.metraj));
+  const p1L    = isSale ? fmt(p1) + '/م²' : fmt(p1) + '/ماه';
+  const p2L    = isSale ? fmt(p2) + ' کل' : fmt(p2) + ' ودیعه';
+  const hot    = f.lead_score === 'hot';
+  let statusBdg = '';
+  if (f.status === 'فروخته') statusBdg = `<span class="bdg b-sold">فروخته</span>`;
+  else if (f.is_stale)       statusBdg = `<span class="bdg b-stale">راکد</span>`;
+  else if (f.status === 'فعال') statusBdg = `<span class="bdg b-green">فعال</span>`;
+
+  return `<div class="card" onclick="openFileDetail(${f.id})">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div class="card-title">${esc(f.type_melk)}${f.metraj ? ' · ' + toFa(parseNum(f.metraj)) + ' م²' : ''}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
+          ${hot ? '<span class="bdg b-hot">🔥 HOT</span>' : ''}
+          ${statusBdg}
+        </div>
+      </div>
+      <div class="card-sub">📍 ${esc(f.hood||'شیراز')} · ${esc(f.type_moameleh||'')} · مشاور: ${esc(f.advisor_name||'—')}</div>
+      <div class="specs">
+        ${f.khab ? `<div class="sp"><b>${esc(f.khab)}</b> خواب</div>` : ''}
+        ${f.tabaqeh ? `<div class="sp">طبقه <b>${esc(f.tabaqeh)}</b></div>` : ''}
+        ${f.sal_sakh ? `<div class="sp">ساخت <b>${esc(f.sal_sakh)}</b></div>` : ''}
+        ${f.jahat ? `<div class="sp"><b>${esc(f.jahat)}</b></div>` : ''}
+        ${f.lead_count > 0 ? `<div class="sp" style="color:var(--gold)"><b>${toFa(f.lead_count)}</b> لید</div>` : ''}
+        ${f.photo_count > 0 ? `<div class="sp">📷 <b>${toFa(f.photo_count)}</b></div>` : ''}
+      </div>
+      <div class="card-row">
+        <div><div class="card-price">${p1L}</div><div class="card-price-lbl">${isSale?'قیمت متری':'ماهانه'}</div></div>
+        <div style="text-align:left"><div style="font-size:13px;font-weight:600;color:var(--gd)">${p2L}</div></div>
+      </div>
+      ${f.price_badge ? `<div style="margin-top:6px"><span class="bdg ${priceBadgeCls(f.price_badge)}">${f.price_badge}</span></div>` : ''}
+    </div>
+  </div>`;
+}
+
+function priceBadgeCls(badge) {
+  if (!badge) return '';
+  if (badge.includes('زیر')) return 'b-green';
+  if (badge.includes('بالا')) return 'b-hot';
+  return 'b-sold';
+}
+
+// ── File Detail ───────────────────────────────────────────────────────────
+async function openFileDetail(id) {
+  document.getElementById('file-modal-content').innerHTML = `<div class="mbody">${skeletonCards(2)}</div>`;
+  document.getElementById('file-modal').classList.add('open');
+  const r = await api('/api/advisor/file/' + id);
+  if (!r.ok) { document.getElementById('file-modal-content').innerHTML = `<div class="mbody">${errMsg(r.msg)}</div>`; return; }
+  renderFileModal(r.file);
+}
+
+function renderFileModal(f) {
+  const isSale = f.type_moameleh === 'فروش';
+  const p1 = parsePrice1(f.price1);
+  const p2 = parsePrice2(f.price2, p1, parseNum(f.metraj));
+  const canEdit = f.can_edit;
+  const photos  = f.photos || [];
+  const limit   = f.photo_limit || 6;
+
+  let photosHtml = `<div class="photo-grid">`;
+  photos.forEach((url,i) => {
+    photosHtml += `<div class="photo-thumb"><img src="${esc(url)}" loading="lazy"><button class="photo-del" onclick="deletePhoto(${f.id},'${esc(url)}')" ${canEdit?'':'style="display:none"'}>✕</button></div>`;
+  });
+  if (canEdit && photos.length < limit) {
+    photosHtml += `<label class="upload-btn"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>عکس</span><input type="file" accept="image/*" style="display:none" onchange="uploadPhoto(${f.id},this)"></label>`;
+  }
+  photosHtml += `</div>`;
+
+  const statusOpts = ['فعال','فروخته','راکد'].map(s =>
+    `<option ${f.status===s?'selected':''}>${s}</option>`).join('');
+
+  let commHtml = '';
+  if (f.commission_estimate) {
+    commHtml = `<div class="comm-box"><div class="comm-n">${fmt(f.commission_estimate)} تومان</div><div class="comm-l">تخمین کمیسیون آژانس (۱٪)</div></div>`;
+  }
+
+  const matchedLeads = (f.matched_leads || []).slice(0, 5);
+  let leadsHtml = '';
+  if (matchedLeads.length) {
+    leadsHtml = `<div class="sec-hdr" style="margin-top:12px"><div class="sec-title">لیدهای match‌شده</div></div>`;
+    leadsHtml += matchedLeads.map(l => `<div class="lead-card">
+      <div style="font-size:12px;font-weight:600;color:var(--tx)">${esc(l.name||'ناشناس')}</div>
+      <div style="font-size:11px;color:var(--tx2);margin-top:3px">${esc(l.deal_type||'')} · ${esc(l.hood||'')} · ${esc(l.status||'')}</div>
+    </div>`).join('');
+  }
+
+  document.getElementById('file-modal-content').innerHTML = `
+    <div class="mhandle"></div>
+    ${photos.length || canEdit ? photosHtml : ''}
+    <div class="mbody">
+      <div class="m-title">V-${toFa(f.id)} — ${esc(f.type_melk)}</div>
+      <div class="m-sub">📍 ${esc(f.hood||'شیراز')} · ${esc(f.type_moameleh)}</div>
+      ${f.price_badge ? `<div style="margin-bottom:10px"><span class="bdg ${priceBadgeCls(f.price_badge)}">${f.price_badge}</span></div>` : ''}
+      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between">
+        <div><div style="font-size:18px;font-weight:700;color:var(--gold)">${isSale ? fmt(p1)+'/م²' : fmt(p1)+'/ماه'}</div><div style="font-size:10px;color:var(--tx2)">${isSale?'قیمت متری':'اجاره'}</div></div>
+        <div style="text-align:left"><div style="font-size:15px;font-weight:600;color:var(--gd)">${fmt(p2)} ت</div><div style="font-size:10px;color:var(--tx2)">${isSale?'کل':'ودیعه'}</div></div>
+      </div>
+      <table class="dtbl">
+        ${row('کد ملک', 'V-'+toFa(f.id))}
+        ${row('متراژ', f.metraj ? toFa(parseNum(f.metraj))+' م²' : '—')}
+        ${row('خواب', f.khab)}
+        ${row('طبقه', f.tabaqeh)}
+        ${row('سال ساخت', f.sal_sakh)}
+        ${row('جهت', f.jahat)}
+        ${row('سند', f.sanad)}
+        ${f.asansor ? row('آسانسور','دارد') : ''}
+        ${f.parking  ? row('پارکینگ','دارد') : ''}
+        ${f.anbari   ? row('انباری','دارد') : ''}
+        ${f.tel && canEdit ? row('تلفن مالک', f.tel, true) : ''}
+        ${f.addr && canEdit ? row('آدرس', f.addr) : ''}
+        ${f.tozih ? row('توضیحات', f.tozih) : ''}
+        ${row('تاریخ ثبت', f.date||'—')}
+        ${f.days_old !== undefined ? row('قدمت فایل', toFa(f.days_old)+' روز') : ''}
+      </table>
+      ${commHtml}
+      ${canEdit ? `<div class="fr"><label class="fl">تغییر وضعیت</label>
+        <select class="fs" id="modal-status" onchange="changeFileStatus(${f.id},this.value)">${statusOpts}</select>
+      </div>` : ''}
+      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''}
+      ${leadsHtml}
+    </div>`;
+
+  // Store divar text for modal
+  window._divarTexts = window._divarTexts || {};
+  window._divarTexts[f.id] = f.divar_text;
+}
+
+function showDivar(fid) {
+  const txt = (window._divarTexts || {})[fid] || '';
+  const box = document.createElement('div');
+  box.style = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML = `<div style="background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);padding:20px;max-width:400px;width:100%;max-height:80dvh;overflow-y:auto">
+    <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:10px">متن آگهی دیوار</div>
+    <div class="divar-box">${esc(txt)}</div>
+    <button class="btn-gold" onclick="navigator.clipboard.writeText(${JSON.stringify(txt)}).then(()=>toast('کپی شد ✓'))">کپی متن</button>
+    <button class="btn-outline" onclick="this.closest('[style]').remove()">بستن</button>
+  </div>`;
+  box.onclick = e => { if(e.target===box) box.remove(); };
+  document.body.appendChild(box);
+}
+
+function row(lbl, val, ltr=false) {
+  if (!val && val !== 0) return '';
+  return `<tr><td>${lbl}</td><td ${ltr?'dir="ltr"':''}>${esc(String(val))}</td></tr>`;
+}
+
+async function changeFileStatus(fid, status) {
+  const r = await api('/api/advisor/file/'+fid+'/status', {
+    method: 'POST', body: JSON.stringify({status})
+  });
+  if (r.ok) { toast('وضعیت تغییر کرد ✓'); _myFiles = []; }
+  else toast(r.msg || 'خطا');
+}
+
+async function uploadPhoto(fid, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('photo', file);
+  toast('در حال آپلود...');
+  const r = await api('/api/advisor/file/'+fid+'/photos', {
+    method: 'POST', body: fd, headers: {'Authorization': 'Bearer ' + TOKEN}
+  });
+  if (r.ok) { toast('عکس آپلود شد ✓'); openFileDetail(fid); }
+  else toast(r.msg || 'خطای آپلود');
+}
+
+async function deletePhoto(fid, url) {
+  if (!confirm('این عکس حذف شود؟')) return;
+  const r = await api('/api/advisor/file/'+fid+'/photo', {
+    method: 'DELETE', body: JSON.stringify({url})
+  });
+  if (r.ok) { toast('حذف شد ✓'); openFileDetail(fid); }
+  else toast(r.msg || 'خطا');
+}
+
+function closeFileModal(e) {
+  if (e && e.target !== document.getElementById('file-modal')) return;
+  document.getElementById('file-modal').classList.remove('open');
+}
+
+// ── Buyers ────────────────────────────────────────────────────────────────
+async function loadBuyers() {
+  document.getElementById('buyers-list').innerHTML = skeletonCards(3);
+  const r = await api('/api/advisor/buyers');
+  if (!r.ok) { document.getElementById('buyers-list').innerHTML = errMsg(r.msg); return; }
+  _buyers = r.buyers || [];
+  renderBuyers();
+}
+function renderBuyers() {
+  const el = document.getElementById('buyers-list');
+  if (!_buyers.length) { el.innerHTML = `<div class="empty">هنوز خریداری ثبت نشده<br><small>با دکمه + خریدار جدید اضافه کنید</small></div>`; return; }
+  el.innerHTML = _buyers.map(b => {
+    const matches = (b.matched_files || []).length;
+    return `<div class="card">
+      <div class="card-body">
+        <div class="card-row" style="margin-bottom:6px">
+          <div>
+            <div class="card-title">${esc(b.name||'—')}</div>
+            <div style="font-size:11px;color:var(--gold);direction:ltr;text-align:right">${esc(b.tel||'')}</div>
+          </div>
+          <div style="text-align:center">
+            <span class="bdg ${b.urgency==='فوری'?'b-hot':'b-sold'}">${esc(b.urgency||'عادی')}</span>
+          </div>
+        </div>
+        <div class="specs">
+          ${b.moameleh ? `<div class="sp"><b>${esc(b.moameleh)}</b></div>` : ''}
+          ${b.budget   ? `<div class="sp">بودجه: <b>${esc(b.budget)}</b></div>` : ''}
+          ${b.metraj_min||b.metraj_max ? `<div class="sp">متراژ: <b>${esc(b.metraj_min||'?')}–${esc(b.metraj_max||'?')}</b> م²</div>` : ''}
+          ${b.khab ? `<div class="sp"><b>${esc(b.khab)}</b> خواب</div>` : ''}
+          ${b.hood ? `<div class="sp">📍 ${esc(b.hood)}</div>` : ''}
+        </div>
+        ${matches ? `<div style="font-size:11px;color:var(--green)">✓ ${toFa(matches)} فایل مطابق پیدا شد</div>` : ''}
+        ${b.next_followup ? `<div style="font-size:10px;color:var(--tx2);margin-top:4px">پیگیری: ${esc(b.next_followup)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openBuyerForm() {
+  ['b-name','b-tel','b-budget','b-mmin','b-mmax','b-khab','b-notes','b-followup']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('buyer-sheet').classList.add('open');
+}
+function closeBuyerSheet(e) {
+  if (e && e.target !== document.getElementById('buyer-sheet')) return;
+  document.getElementById('buyer-sheet').classList.remove('open');
+}
+async function submitBuyer() {
+  const body = {
+    name:        document.getElementById('b-name').value.trim(),
+    tel:         document.getElementById('b-tel').value.trim(),
+    buyer_type:  document.getElementById('b-type').value,
+    moameleh:    document.getElementById('b-deal').value,
+    budget:      document.getElementById('b-budget').value.trim(),
+    metraj_min:  document.getElementById('b-mmin').value,
+    metraj_max:  document.getElementById('b-mmax').value,
+    khab:        document.getElementById('b-khab').value,
+    hood:        document.getElementById('b-hood').value,
+    urgency:     document.getElementById('b-urgency').value,
+    notes:       document.getElementById('b-notes').value.trim(),
+    next_followup: document.getElementById('b-followup').value.trim(),
+  };
+  if (!body.name || !body.tel) { toast('نام و تلفن الزامی است'); return; }
+  const r = await api('/api/advisor/buyers/new', {method:'POST', body:JSON.stringify(body)});
+  if (r.ok) {
+    closeBuyerSheet();
+    toast('خریدار ثبت شد ✓');
+    _buyers = [];
+    loadBuyers();
+  } else toast(r.msg || 'خطا');
+}
+
+// ── Visits ────────────────────────────────────────────────────────────────
+async function loadVisits() {
+  document.getElementById('visits-list').innerHTML = skeletonCards(3);
+  const r = await api('/api/advisor/visits');
+  if (!r.ok) { document.getElementById('visits-list').innerHTML = errMsg(r.msg); return; }
+  _visits = r.visits || [];
+  renderVisits();
+}
+function renderVisits() {
+  const el = document.getElementById('visits-list');
+  if (!_visits.length) { el.innerHTML = `<div class="empty">هنوز بازدیدی ثبت نشده</div>`; return; }
+  el.innerHTML = _visits.map(v => {
+    const files = (v.files_info||[]).map(fi => `${fi.type||'ملک'} (${fi.hood||''})`).join('، ')
+                  || (v.files_planned||[]).map(id=>'فایل '+toFa(id)).join('، ');
+    return `<div class="visit-card">
+      <div class="visit-top">
+        <span class="visit-name">${esc(v.buyer_name||'—')}</span>
+        <span class="visit-date">${esc(v.visit_date||'')} ${esc(v.visit_time||'')}</span>
+      </div>
+      <div class="visit-files">${esc(files) || 'بدون فایل'}</div>
+      ${v.buyer_tel ? `<div style="font-size:11px;color:var(--gd);margin-top:4px;direction:ltr;text-align:right">${esc(v.buyer_tel)}</div>` : ''}
+      ${v.outcome ? `<div style="font-size:10px;color:var(--tx2);margin-top:4px">نتیجه: ${esc(v.outcome)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+function openVisitForm() {
+  ['v-bname','v-btel','v-date','v-time','v-files'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('visit-sheet').classList.add('open');
+}
+function closeVisitSheet(e) {
+  if (e && e.target !== document.getElementById('visit-sheet')) return;
+  document.getElementById('visit-sheet').classList.remove('open');
+}
+async function submitVisit() {
+  const filesRaw = document.getElementById('v-files').value;
+  const filesPlanned = filesRaw.split(/[\s,،]+/).filter(Boolean).map(x => parseInt(x)).filter(n => !isNaN(n));
+  const body = {
+    buyer_name:   document.getElementById('v-bname').value.trim(),
+    buyer_tel:    document.getElementById('v-btel').value.trim(),
+    visit_date:   document.getElementById('v-date').value.trim(),
+    visit_time:   document.getElementById('v-time').value.trim(),
+    files_planned: filesPlanned,
+  };
+  if (!body.buyer_name) { toast('نام خریدار الزامی است'); return; }
+  const r = await api('/api/advisor/visits/new', {method:'POST', body:JSON.stringify(body)});
+  if (r.ok) {
+    closeVisitSheet();
+    toast('بازدید ثبت شد ✓');
+    _visits = [];
+    loadVisits();
+  } else toast(r.msg || 'خطا');
+}
+
+// ── Leads ─────────────────────────────────────────────────────────────────
+async function loadLeads() {
+  document.getElementById('leads-list').innerHTML = skeletonCards(4);
+  const endpoint = USER.role === 'supervisor' ? '/api/advisor/leads/all' : '/api/advisor/leads';
+  const r = await api(endpoint);
+  if (!r.ok) { document.getElementById('leads-list').innerHTML = errMsg(r.msg); return; }
+  _leads = r.leads || [];
+  renderLeads();
+}
+function setLeadFilter(el, val) {
+  document.querySelectorAll('#leads-chips .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on'); _leadF = val; renderLeads();
+}
+function renderLeads() {
+  const el  = document.getElementById('leads-list');
+  const list = _leads.filter(l => {
+    if (_leadF === 'all') return true;
+    if (['VIP','hot','warm','cold'].includes(_leadF)) return (l.score_badge || _leadScore(l)) === _leadF;
+    return l.status === _leadF;
+  });
+  if (!list.length) { el.innerHTML = `<div class="empty">لیدی یافت نشد</div>`; return; }
+  el.innerHTML = list.map(l => leadCard(l)).join('');
+}
+
+function leadCard(l) {
+  const badge = scoreClass(l.score_badge || l.score);
+  const viewed = (l.files_viewed_info||[]).map(fi =>
+    `<span class="lead-file-tag" onclick="openFileDetail(${fi.id})">${fi.type||''} ${fi.hood||''}</span>`
+  ).join('');
+  const statusOpts = ['جدید','در پیگیری','بازدید','معامله','از دست رفته']
+    .map(s => `<option ${l.status===s?'selected':''}>${s}</option>`).join('');
+
+  return `<div class="lead-card">
+    <div class="lead-top">
+      <div>
+        <div class="lead-name">${esc(l.name||'ناشناس')}</div>
+        <div class="lead-phone">${esc(l.phone||'')}</div>
+      </div>
+      <span class="bdg ${badge.cls}">${badge.icon} ${badge.lbl}</span>
+    </div>
+    <div class="lead-info">
+      ${esc(l.deal_type||'')} · ${esc(l.prop_type||'')} · ${esc(l.hood||'')}
+      ${l.budget ? ' · بودجه: ' + esc(String(l.budget)) : ''}
+    </div>
+    ${viewed ? `<div class="lead-files">${viewed}</div>` : ''}
+    <div class="lead-bot">
+      <div style="font-size:10px;color:var(--tx2)">${toFa(l.contact_count||0)} تماس · ${esc(l.last_contact||l.updated_at||'')}</div>
+      <select class="lead-status-sel" onchange="setLeadStatus(${l.id},this.value)">${statusOpts}</select>
+    </div>
+  </div>`;
+}
+
+async function setLeadStatus(id, status) {
+  const r = await api('/api/advisor/leads/'+id+'/status', {
+    method:'POST', body:JSON.stringify({status})
+  });
+  if (!r.ok) toast(r.msg || 'خطا');
+  else toast('وضعیت لید تغییر کرد ✓');
+}
+
+// ── Score helpers ─────────────────────────────────────────────────────────
+function _leadScore(l) {
+  const s = (l.score_badge || l.score || '').toLowerCase();
+  if (s === 'vip') return 'VIP';
+  if (s === 'hot') return 'hot';
+  if (s === 'warm') return 'warm';
+  return 'cold';
+}
+function scoreClass(score) {
+  const s = (score||'').toLowerCase();
+  if (s === 'vip')  return {cls:'b-vip',  icon:'👑', lbl:'VIP'};
+  if (s === 'hot')  return {cls:'b-hot',  icon:'🔥', lbl:'داغ'};
+  if (s === 'warm') return {cls:'b-warm', icon:'⚡', lbl:'گرم'};
+  return               {cls:'b-cold', icon:'🌡️', lbl:'سرد'};
+}
+
+// ── Price parsing (same logic as miniapp.html) ────────────────────────────
+function parseNum(v) {
+  if (!v) return 0;
+  let s = String(v);
+  for (const [fa,en] of [['۰','0'],['۱','1'],['۲','2'],['۳','3'],['۴','4'],['۵','5'],['۶','6'],['۷','7'],['۸','8'],['۹','9']])
+    s = s.split(fa).join(en);
+  s = s.replace(/[^\d.]/g,'');
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+function parsePrice1(v) {
+  const n = parseNum(v);
+  if (!n) return 0;
+  return n < 10000 ? n * 1e6 : n;
+}
+function parsePrice2(v, p1, m) {
+  const n = parseNum(v);
+  if (!n) return p1 && m ? Math.round(p1 * m) : 0;
+  return n < 1e6 ? n * 1e6 : n;
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function skeletonCards(n) {
+  return Array(n).fill(0).map(() =>
+    `<div class="sk-card"><div class="sk sk-line w70"></div><div class="sk sk-line w50"></div><div class="sk sk-line w35"></div></div>`
+  ).join('');
+}
+function errMsg(msg) {
+  return `<div class="empty">خطا: ${esc(msg||'مشکل در اتصال')}</div>`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+function init() {
+  if (TOKEN && USER.name) {
+    startApp();
+  } else {
+    document.getElementById('login-page').style.display = 'flex';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
