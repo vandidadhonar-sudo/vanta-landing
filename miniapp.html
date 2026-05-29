@@ -339,6 +339,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <script>
 'use strict';
 
+// Primary source: live catalog from DynamoDB via the filing Lambda API.
+// Set CATALOG_API to your API Gateway/Function URL base (e.g. https://xxxx.execute-api.eu-central-1.amazonaws.com).
+// If empty or unreachable, it transparently falls back to the GitHub raw snapshot below.
+const CATALOG_API = '';
 const FILES_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/files.json';
 const SETTINGS_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/settings.json';
 const RATES_URL = 'https://call.tgju.org/ajax.json';
@@ -502,11 +506,19 @@ function applyRates(d) {
 async function loadData() {
   const t5 = Math.floor(Date.now() / 300000);
   try {
-    const [fRes, sRes] = await Promise.all([
-      fetch(FILES_URL + '?v=' + t5),
-      fetch(SETTINGS_URL + '?v=' + t5)
-    ]);
-    const raw = await fRes.json();
+    // Try the live DynamoDB-backed catalog first; fall back to the GitHub snapshot.
+    let raw = null;
+    if (CATALOG_API) {
+      try {
+        const cRes = await fetch(CATALOG_API.replace(/\/$/, '') + '/api/catalog?v=' + t5);
+        if (cRes.ok) raw = await cRes.json();
+      } catch (e) { /* fall through to snapshot */ }
+    }
+    const sRes = await fetch(SETTINGS_URL + '?v=' + t5);
+    if (!raw) {
+      const fRes = await fetch(FILES_URL + '?v=' + t5);
+      raw = await fRes.json();
+    }
     settings = await sRes.json();
     RATE = settings.rahn_rate || settings.rahn_to_ejare || 30;
     mktRef = settings.market_price_ref || {};
