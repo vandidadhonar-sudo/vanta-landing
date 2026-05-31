@@ -652,119 +652,34 @@ async function loadQuote() {
 
 // ── Home / Dashboard ──────────────────────────────────────────────────────
 async function loadHome() {
-  document.getElementById('home-content').innerHTML = skeletonCards(3);
-  const r = await api('/api/advisor/dashboard');
-  if (!r.ok) { document.getElementById('home-content').innerHTML = errMsg(r.msg); return; }
-  updateDate();
-  if (r.now) {
-    const parts = r.now.split(' ')[0];
-    document.getElementById('hdr-date').textContent = parts;
-  }
-  renderHome(r);
+  renderHome();
 }
 
-function renderHome(r) {
-  const s = r.stats;
-  const isSup = r.role === 'supervisor';
-
-  let html = '';
-
-  if (!isSup) {
-    // Advisor dashboard
-    html += `<div class="stats-grid">
-      <div class="stat-card green"><div class="stat-n">${toFa(s.active)}</div><div class="stat-l">فایل فعال</div></div>
-      <div class="stat-card yellow"><div class="stat-n">${toFa(s.stale)}</div><div class="stat-l">راکد &gt;۴۵ روز</div></div>
-      <div class="stat-card"><div class="stat-n">${toFa(s.sold)}</div><div class="stat-l">فروخته</div></div>
-      <div class="stat-card green"><div class="stat-n">${toFa(s.buyers)}</div><div class="stat-l">خریدار فعال</div></div>
+function renderHome() {
+  const name = USER.name || '';
+  const total = _myFiles.length;
+  const active = _myFiles.filter(f => f.status === 'فعال' || !f.status).length;
+  const sold = _myFiles.filter(f => f.status === 'فروخته').length;
+  const stale = _myFiles.filter(f => f.status === 'راکد').length;
+  const today = new Date().toLocaleDateString('fa-IR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  const el = document.getElementById('home-content');
+  el.innerHTML = `
+    <div style="padding:20px 16px">
+      <div style="font-size:18px;font-weight:700;color:var(--gold);margin-bottom:4px">خوش آمدید، ${esc(name)} 🏠</div>
+      <div style="font-size:13px;color:var(--tx2);margin-bottom:20px">${today}</div>
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card green"><div class="stat-n">${toFa(active)}</div><div class="stat-l">فایل فعال</div></div>
+        <div class="stat-card yellow"><div class="stat-n">${toFa(stale)}</div><div class="stat-l">راکد</div></div>
+        <div class="stat-card"><div class="stat-n">${toFa(sold)}</div><div class="stat-l">فروخته</div></div>
+        <div class="stat-card"><div class="stat-n">${toFa(total)}</div><div class="stat-l">کل فایل‌ها</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn-gold" onclick="showPage('pg-myfiles');loadMyFiles()">📋 فایل‌های من</button>
+        <button class="btn-outline" onclick="showPage('pg-allfiles');loadAllFiles()">🔍 جستجو در فایل‌ها</button>
+      </div>
     </div>`;
-
-    // Price intel
-    if (r.price_intel && r.price_intel.my_avg) {
-      const pi = r.price_intel;
-      html += `<div class="sec-hdr"><div class="sec-title">هوش قیمت</div></div>
-        <div class="intel-card">
-          <div class="intel-row"><span class="intel-lbl">میانگین قیمت فایل‌های شما</span><span class="intel-val">${fmt(pi.my_avg)}/م²</span></div>`;
-      for (const [hood, ref] of Object.entries(pi.market_ref || {})) {
-        const diff = Math.round((pi.my_avg - ref) / ref * 100);
-        const cls  = diff > 8 ? 'diff-up' : diff < -8 ? 'diff-dn' : 'diff-eq';
-        const sign = diff > 0 ? '+' : '';
-        html += `<div class="intel-row"><span class="intel-lbl">${hood}</span><span class="intel-val">${fmt(ref)}/م² <span class="intel-diff ${cls}">${sign}${toFa(diff)}٪</span></span></div>`;
-      }
-      html += `</div>`;
-    }
-
-    // Leads this week
-    html += `<div class="sec-hdr"><div class="sec-title">⚡ لیدهای این هفته</div><div class="stat-n" style="font-size:14px;color:var(--gold)">${toFa(r.week_leads_count || 0)}</div></div>`;
-    if (r.my_leads && r.my_leads.length) {
-      html += r.my_leads.slice(0,5).map(l => miniLeadCard(l)).join('');
-      if (r.my_leads.length > 5) html += `<button class="btn-outline" onclick="showPage('leads')">مشاهده همه لیدها</button>`;
-    } else {
-      html += `<div style="font-size:12px;color:var(--tx2);text-align:center;padding:16px">هنوز لیدی برای شما ثبت نشده</div>`;
-    }
-
-    // Recent visits
-    if (r.recent_visits && r.recent_visits.length) {
-      html += `<div class="sec-hdr"><div class="sec-title">آخرین بازدیدها</div></div>`;
-      html += r.recent_visits.map(v => miniVisitCard(v)).join('');
-    }
-
-    // Rank
-    if (r.rank) {
-      html += `<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px;text-align:center;margin-top:12px">
-        <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">رتبه شما در بین مشاوران</div>
-        <div style="font-size:28px;font-weight:700;color:var(--gold)">${toFa(r.rank)} <span style="font-size:14px;color:var(--tx2)">از ${toFa(r.total_advisors)}</span></div>
-      </div>`;
-    }
-
-  } else {
-    // Supervisor dashboard
-    html += `<div class="stats-grid">
-      <div class="stat-card green"><div class="stat-n">${toFa(s.active)}</div><div class="stat-l">فایل فعال</div></div>
-      <div class="stat-card"><div class="stat-n">${toFa(s.total_files)}</div><div class="stat-l">کل فایل‌ها</div></div>
-      <div class="stat-card"><div class="stat-n">${toFa(s.total_leads)}</div><div class="stat-l">کل لیدها</div></div>
-      <div class="stat-card red"><div class="stat-n">${toFa(s.hot_leads)}</div><div class="stat-l">لید داغ</div></div>
-      <div class="stat-card"><div class="stat-n">${toFa(s.total_advisors)}</div><div class="stat-l">مشاور فعال</div></div>
-      <div class="stat-card"><div class="stat-n">${toFa(s.total_buyers)}</div><div class="stat-l">خریدار ثبت‌شده</div></div>
-    </div>`;
-
-    // Advisor breakdown
-    if (r.advisor_breakdown && r.advisor_breakdown.length) {
-      html += `<div class="sec-hdr"><div class="sec-title">عملکرد مشاوران</div></div>`;
-      const sorted = [...r.advisor_breakdown].sort((a,b) => b.active - a.active);
-      html += `<div style="background:var(--bg1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:12px">`;
-      sorted.forEach((adv,i) => {
-        html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;${i?'border-top:1px solid rgba(197,164,89,.06)':''}">
-          <div>
-            <div style="font-size:13px;font-weight:600;color:var(--tx)">${adv.name}</div>
-            <div style="font-size:10px;color:var(--tx2)">${adv.code}</div>
-          </div>
-          <div style="display:flex;gap:10px;text-align:center">
-            <div><div style="font-size:14px;font-weight:700;color:var(--green)">${toFa(adv.active)}</div><div style="font-size:9px;color:var(--tx2)">فعال</div></div>
-            <div><div style="font-size:14px;font-weight:700;color:var(--gold)">${toFa(adv.sold)}</div><div style="font-size:9px;color:var(--tx2)">فروخته</div></div>
-            <div><div style="font-size:14px;font-weight:700;color:var(--tx2)">${toFa(adv.stale)}</div><div style="font-size:9px;color:var(--tx2)">راکد</div></div>
-          </div>
-        </div>`;
-      });
-      html += `</div>`;
-    }
-
-    // Recent leads
-    if (r.recent_leads && r.recent_leads.length) {
-      html += `<div class="sec-hdr"><div class="sec-title">آخرین لیدها</div><button class="sec-more" onclick="showPage('leads')">همه ←</button></div>`;
-      html += r.recent_leads.slice(0,8).map(l => miniLeadCard(l)).join('');
-    }
-  }
-
-  // Quote
-  if (r.daily_quote) {
-    html += `<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-top:14px;text-align:center">
-      <div style="font-size:9px;color:var(--gd);letter-spacing:1px;margin-bottom:6px">سخن روز</div>
-      <div style="font-size:12px;color:var(--tx);line-height:1.9">${r.daily_quote}</div>
-    </div>`;
-  }
-
-  document.getElementById('home-content').innerHTML = html;
 }
+
 
 function miniLeadCard(l) {
   const badge = scoreClass(l.score_badge || l.score);
