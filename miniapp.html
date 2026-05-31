@@ -348,6 +348,8 @@ const SETTINGS_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta
 const RATES_URL = 'https://call.tgju.org/ajax.json';
 const RATES_KEY = 'vanta_r';
 const RATES_TTL = 60 * 60 * 1000;
+// منبع پشتیبان: ExchangeRate-API (رایگان، بدون کلید، بدون فیلتر) — دلار و یورو
+const RATES_FALLBACK_URL = 'https://open.er-api.com/v6/latest/USD';
 
 let allProps = [];
 let settings = {};
@@ -464,7 +466,31 @@ function setTick(ids, val, up, dp) {
   }
 }
 
+// همیشه «در حال بروزرسانی...» تا وقتی داده نیامده — هیچ‌وقت خط خالی.
+function setRatesUpdating() {
+  const ids = ['dollar','dollar2','euro','euro2','gold','gold2','coin','coin2','btc','btc2','usdt','usdt2','eth','eth2'];
+  for (const id of ids) {
+    const vEl = document.getElementById('t-' + id);
+    if (vEl) { const t = (vEl.textContent || '').trim(); if (t === '' || t === '\u2014' || t === '...') vEl.textContent = '\u062f\u0631 \u062d\u0627\u0644 \u0628\u0631\u0648\u0632\u0631\u0633\u0627\u0646\u06cc...'; }
+  }
+}
+
+// fallback: دلار و یورو از ExchangeRate-API (نرخ رسمی؛ طلا در این API نیست).
+async function loadRatesFallback() {
+  const res = await fetch(RATES_FALLBACK_URL);
+  const j = await res.json();
+  const irr = j && j.rates && j.rates.IRR;
+  const eur = j && j.rates && j.rates.EUR;
+  if (!irr) return false;
+  applyRates({
+    dollar: { p: irr, up: true, dp: '0' },
+    euro:   eur ? { p: irr / eur, up: true, dp: '0' } : null,
+  });
+  return true;
+}
+
 async function loadRates() {
+  setRatesUpdating();
   try {
     const cached = JSON.parse(localStorage.getItem(RATES_KEY) || 'null');
     if (cached && Date.now() - cached.ts < RATES_TTL) { applyRates(cached.d); return; }
@@ -473,9 +499,16 @@ async function loadRates() {
     const res = await fetch(RATES_URL);
     const data = await res.json();
     const d = parseRates(data);
-    localStorage.setItem(RATES_KEY, JSON.stringify({ ts: Date.now(), d }));
-    applyRates(d);
-  } catch (e) {}
+    if (d && (d.dollar || d.euro || d.gold)) {
+      localStorage.setItem(RATES_KEY, JSON.stringify({ ts: Date.now(), d }));
+      applyRates(d);
+      return;
+    }
+    throw new Error('empty');
+  } catch (e) {
+    try { const ok = await loadRatesFallback(); if (!ok) setRatesUpdating(); }
+    catch (e2) { setRatesUpdating(); }
+  }
 }
 
 function parseRates(data) {
