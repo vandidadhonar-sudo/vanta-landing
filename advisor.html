@@ -884,7 +884,7 @@ function fileCard(f, isMine) {
   else if (f.is_stale)       statusBdg = `<span class="bdg b-stale">راکد</span>`;
   else if (f.status === 'فعال') statusBdg = `<span class="bdg b-green">فعال</span>`;
 
-  return `<div class="card" onclick="openFileDetail(${f.id})">
+  return `<div class="card" onclick="openFileDetail(${f.property_id||f.id})">
     <div class="card-body">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
         <div class="card-title">${esc(f.type_melk)}${f.metraj ? ' · ' + toFa(parseNum(f.metraj)) + ' م²' : ''}</div>
