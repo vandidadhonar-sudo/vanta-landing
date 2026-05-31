@@ -918,7 +918,7 @@ function priceBadgeCls(badge) {
 }
 
 // ── File Detail ───────────────────────────────────────────────────────────
-async function openFileDetail(id) {
+async async function openFileDetail(id) {
   document.getElementById('file-modal-content').innerHTML = `<div class="mbody">${skeletonCards(2)}</div>`;
   document.getElementById('file-modal').classList.add('open');
   const r = await api('/api/advisor/file/' + id);
