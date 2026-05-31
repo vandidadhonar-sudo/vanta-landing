@@ -1052,7 +1052,7 @@ function row(lbl, val, ltr=false) {
   return `<tr><td>${lbl}</td><td ${ltr?'dir="ltr"':''}>${esc(String(val))}</td></tr>`;
 }
 
-async async function changeFileStatus(fid, status) {
+async function changeFileStatus(fid, status) {
   const r = await api('/api/advisor/file/'+fid, {
     method: 'PUT', body: JSON.stringify({status})
   });
