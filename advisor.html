@@ -452,7 +452,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 <script>
 'use strict';
 
-const API   = 'https://scqr9aeeac.execute-api.eu-central-1.amazonaws.com/filing';
+const API   = 'https://scqr9aeeac.execute-api.eu-central-1.amazonaws.com';
+const API_PATH = '/filing';
 const FA    = '۰۱۲۳۴۵۶۷۸۹';
 
 let TOKEN   = localStorage.getItem('va_tok') || '';
@@ -483,7 +484,7 @@ async function api(path, opts = {}) {
   const headers = {'Authorization': 'Bearer ' + TOKEN, ...(opts.headers || {})};
   if (!(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
   try {
-    const r = await fetch(API + path, {...opts, headers});
+    const r = await fetch(API + API_PATH + path, {...opts, headers});
     if (r.status === 401) { doLogout(); return {ok:false,msg:'توکن منقضی'}; }
     return r.json();
   } catch(e) {
