@@ -994,6 +994,27 @@ function renderFileModal(f) {
         <select class="fs" id="modal-status" onchange="changeFileStatus(${f.id},this.value)">${statusOpts}</select>
       </div>` : ''}
       ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''}
+      ${canEdit ? `<details style="margin-top:10px;border:1px solid var(--bd);border-radius:var(--r)">
+        <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;list-style:none">✏️ ویرایش فایل ▾</summary>
+        <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+          ${editRow('قیمت متری (تومان)', 'price1', f.price1)}
+          ${editRow('قیمت کل (تومان)', 'price2', f.price2)}
+          ${editRow('متراژ', 'metraj', f.metraj)}
+          ${editRow('خواب', 'khab', f.khab)}
+          ${editRow('طبقه واحد', 'floor', f.floor)}
+          ${editRow('کل طبقات', 'tabaqeh', f.tabaqeh)}
+          ${editRow('جهت', 'jahat', f.jahat)}
+          ${editRow('سال ساخت', 'sal_sakh', f.sal_sakh)}
+          ${editRow('آسانسور', 'asansor', f.asansor)}
+          ${editRow('پارکینگ', 'parking', f.parking)}
+          ${editRow('انباری', 'anbari', f.anbari)}
+          ${editRow('آدرس کامل', 'addr', f.addr)}
+          ${editRow('تلفن مالک', 'tel', f.tel)}
+          ${editRow('نام مالک', 'owner_name', f.owner_name)}
+          ${editRow('توضیحات', 'tozih', f.tozih)}
+          <button class="btn-gold" onclick="saveFileEdit(${f.id})" style="margin-top:6px">💾 ذخیره تغییرات</button>
+        </div>
+      </details>` : ''}
       ${leadsHtml}
     </div>`;
 
@@ -1016,16 +1037,40 @@ function showDivar(fid) {
   document.body.appendChild(box);
 }
 
+function editRow(lbl, fid, val) {
+  return '<div style="display:flex;flex-direction:column;gap:2px">'
+    + '<label style="font-size:11px;color:var(--tx2)">' + lbl + '</label>'
+    + '<input id="edit-' + fid + '" value="' + esc(val||'') + '" '
+    + 'style="background:var(--bg2);border:1px solid var(--bd);border-radius:6px;'
+    + 'padding:6px 10px;color:var(--tx);font-size:13px;font-family:inherit">'
+    + '</div>';
+}
+
 function row(lbl, val, ltr=false) {
   if (!val && val !== 0) return '';
   return `<tr><td>${lbl}</td><td ${ltr?'dir="ltr"':''}>${esc(String(val))}</td></tr>`;
 }
 
-async function changeFileStatus(fid, status) {
-  const r = await api('/api/advisor/file/'+fid+'/status', {
-    method: 'POST', body: JSON.stringify({status})
+async async function changeFileStatus(fid, status) {
+  const r = await api('/api/advisor/file/'+fid, {
+    method: 'PUT', body: JSON.stringify({status})
   });
-  if (r.ok) { toast('وضعیت تغییر کرد ✓'); _myFiles = []; }
+  if (r.ok) { toast('وضعیت تغییر کرد ✓'); loadMyFiles(); }
+  else toast(r.msg || 'خطا');
+}
+
+async function saveFileEdit(fid) {
+  const fields = ['price1','price2','metraj','khab','floor','tabaqeh','jahat',
+    'sal_sakh','asansor','parking','anbari','addr','tel','owner_name','tozih'];
+  const body = {};
+  fields.forEach(function(f) {
+    const el = document.getElementById('edit-'+f);
+    if (el) body[f] = el.value;
+  });
+  const r = await api('/api/advisor/file/'+fid, {
+    method: 'PUT', body: JSON.stringify(body)
+  });
+  if (r.ok) { toast('فایل ذخیره شد ✓'); openFileDetail(fid); }
   else toast(r.msg || 'خطا');
 }
 
