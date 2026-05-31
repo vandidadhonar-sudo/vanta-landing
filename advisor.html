@@ -505,7 +505,7 @@ async function doLogin() {
   if (!code) return;
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.textContent = '...';
-  const r = await fetch(API + '/api/advisor/login', {
+  const r = await fetch(API + API_PATH + '/api/advisor/login', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({code})
