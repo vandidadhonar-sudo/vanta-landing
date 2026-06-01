@@ -668,6 +668,7 @@ function renderHome() {
       <div style="display:flex;flex-direction:column;gap:10px">
         <button class="btn-gold" onclick="showPage('pg-myfiles');loadMyFiles()">📋 فایل‌های من</button>
         <button class="btn-outline" onclick="showPage('pg-allfiles');loadAllFiles()">🔍 جستجو در فایل‌ها</button>
+        \${USER.role === 'supervisor' ? \`<button class="btn-outline" onclick="openBroadcast()" style="border-color:var(--gold);color:var(--gold)">📢 پیام به مشاوران</button>\` : ''}
       </div>
     </div>`;
 }
@@ -732,6 +733,33 @@ function renderMyFiles() {
 
 // ── All Files ─────────────────────────────────────────────────────────────
 function exportFilesExcel() {
+  if (typeof XLSX !== 'undefined') {
+    const data = _myFiles.map(f => ({
+      'کد': 'V-' + (f.property_id || f.id || ''),
+      'نوع معامله': f.type_moameleh || '',
+      'نوع ملک': f.type_melk || '',
+      'متراژ': f.metraj || '',
+      'خواب': f.khab || '',
+      'طبقه': f.floor || '',
+      'جهت': f.jahat || '',
+      'سال ساخت': f.sal_sakh || '',
+      'منطقه': f.hood || '',
+      'آدرس': f.addr || '',
+      'قیمت متری': f.price1 || '',
+      'قیمت کل': f.price2 || '',
+      'وضعیت': f.status || 'فعال',
+      'مشاور': f.advisor_name || '',
+      'تاریخ ثبت': f.date || '',
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'فایل‌ها');
+    XLSX.writeFile(wb, 'vanta-files-' + Date.now() + '.xlsx');
+    return;
+  }
+  _exportCSV();
+}
+function _exportCSV() {  
   var rows = _allFiles || [];
   if (!rows.length) { toast("\u0641\u0627\u06cc\u0644\u06cc \u0628\u0631\u0627\u06cc \u062e\u0631\u0648\u062c\u06cc \u0646\u06cc\u0633\u062a"); return; }
   var cols = ["id","type_moameleh","type_melk","metraj","khab","floor","tabaqeh","jahat","sal_sakh","asansor","parking","anbari","sanad","addr","price1","price2","tozih","code","advisor_name","status"];
@@ -901,7 +929,8 @@ function renderFileModal(f) {
       ${canEdit ? `<div class="fr"><label class="fl">تغییر وضعیت</label>
         <select class="fs" id="modal-status" onchange="changeFileStatus(${f.id},this.value)">${statusOpts}</select>
       </div>` : ''}
-      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''}
+      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''
+      ${USER.role === 'supervisor' ? `<button class="btn-outline" style="color:var(--red);border-color:var(--red);margin-top:8px" onclick="deleteFile(${f.id||f.property_id})">🗑 حذف فایل</button>` : ''}}
       ${canEdit ? `<details style="margin-top:10px;border:1px solid var(--bd);border-radius:var(--r)">
         <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;list-style:none">✏️ ویرایش فایل ▾</summary>
         <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
@@ -993,6 +1022,19 @@ async function uploadPhoto(fid, input) {
   });
   if (r.ok) { toast('عکس آپلود شد ✓'); openFileDetail(fid); }
   else toast(r.msg || 'خطای آپلود');
+}
+
+async function deleteFile(fid) {
+  if (!confirm('آیا از حذف این فایل اطمینان دارید؟ این عمل برگشت‌پذیر نیست.')) return;
+  const r = await api('/api/advisor/file/' + fid, {method: 'DELETE'}).catch(() => null);
+  if (r && r.ok) {
+    toast('✅ فایل حذف شد');
+    closeFileModal();
+    loadMyFiles();
+    loadAllFiles();
+  } else {
+    toast('❌ ' + (r && r.msg ? r.msg : 'خطا در حذف'));
+  }
 }
 
 async function deletePhoto(fid, url) {
@@ -1186,6 +1228,19 @@ function leadCard(l) {
       <select class="lead-status-sel" onchange="setLeadStatus(${l.id},this.value)">${statusOpts}</select>
     </div>
   </div>`;
+}
+
+function openBroadcast() {
+  const msg = prompt('📢 متن پیام به همه مشاوران:');
+  if (!msg || !msg.trim()) return;
+  fetch(API + API_PATH + '/api/supervisor/broadcast', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+    body: JSON.stringify({message: msg.trim()})
+  }).then(r => r.json()).then(r => {
+    if (r && r.ok) toast('✅ ' + r.msg);
+    else toast('❌ ' + (r && r.msg ? r.msg : 'خطا'));
+  }).catch(() => toast('❌ خطای اتصال'));
 }
 
 async function setLeadStatus(id, status) {
