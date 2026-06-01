@@ -929,8 +929,8 @@ function renderFileModal(f) {
       ${canEdit ? `<div class="fr"><label class="fl">تغییر وضعیت</label>
         <select class="fs" id="modal-status" onchange="changeFileStatus(${f.id},this.value)">${statusOpts}</select>
       </div>` : ''}
-      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''
-      ${USER.role === 'supervisor' ? `<button class="btn-outline" style="color:var(--red);border-color:var(--red);margin-top:8px" onclick="deleteFile(${f.id||f.property_id})">🗑 حذف فایل</button>` : ''}}
+      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''}
+      ${USER.role === 'supervisor' ? `<button class="btn-outline" style="color:var(--red);border-color:var(--red);margin-top:8px" onclick="deleteFile(${f.id||f.property_id})">🗑 حذف فایل</button>` : ''}
       ${canEdit ? `<details style="margin-top:10px;border:1px solid var(--bd);border-radius:var(--r)">
         <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;list-style:none">✏️ ویرایش فایل ▾</summary>
         <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
