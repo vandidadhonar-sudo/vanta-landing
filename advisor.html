@@ -1316,6 +1316,9 @@ async function loadAdvisors() {
     const active = a.active !== false;
     const chatId = a.bale_chat_id || '';
     const code   = esc(a.consultant_code);
+    const toggleBtn = active
+      ? '<button class="btn-outline adv-toggle" data-code="' + code + '" data-active="0" style="font-size:11px;padding:5px 10px;color:var(--red);border-color:var(--red)">غیرفعال</button>'
+      : '<button class="btn-outline adv-toggle" data-code="' + code + '" data-active="1" style="font-size:11px;padding:5px 10px;color:var(--green);border-color:var(--green)">فعال سازی</button>';
     return '<div class="card"><div class="card-body">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
       '<div class="card-title">' + esc(a.name || code) + '</div>' +
@@ -1325,12 +1328,17 @@ async function loadAdvisors() {
       '<div class="fr" style="margin-bottom:8px"><label class="fl" style="font-size:11px">Chat ID بله:</label>' +
       '<input class="fi" id="cid-' + code + '" type="text" value="' + esc(chatId) + '" placeholder="شناسه عددی بله" dir="ltr" style="font-size:12px"></div>' +
       '<div style="display:flex;gap:8px">' +
-      '<button class="btn-outline" style="font-size:11px;padding:5px 10px" onclick="saveChatId('' + code + '')">ذخیره ID</button>' +
-      (active
-        ? '<button class="btn-outline" style="font-size:11px;padding:5px 10px;color:var(--red);border-color:var(--red)" onclick="toggleAdvisor('' + code + '',false)">غیرفعال</button>'
-        : '<button class="btn-outline" style="font-size:11px;padding:5px 10px;color:var(--green);border-color:var(--green)" onclick="toggleAdvisor('' + code + '',true)">فعال سازی</button>') +
+      '<button class="btn-outline adv-save" data-code="' + code + '" style="font-size:11px;padding:5px 10px">ذخیره ID</button>' +
+      toggleBtn +
       '</div></div></div>';
   }).join('');
+  // event delegation - بدون inline onclick
+  el.querySelectorAll('.adv-save').forEach(b => {
+    b.addEventListener('click', () => saveChatId(b.dataset.code));
+  });
+  el.querySelectorAll('.adv-toggle').forEach(b => {
+    b.addEventListener('click', () => toggleAdvisor(b.dataset.code, b.dataset.active === '1'));
+  });
 }
 async function saveChatId(code) {
   const el = document.getElementById('cid-' + code);
@@ -1346,8 +1354,7 @@ async function toggleAdvisor(code, active) {
   else toast('خطا: ' + (r && r.msg || ''));
 }
 function openAddAdvisor() {
-  const code = prompt('کد مشاور جدید:
-مثال: hadibakhtzadeh116');
+  const code = prompt('کد مشاور جدید (مثال: hadibakhtzadeh116):');
   if (!code || !code.trim()) return;
   const name = prompt('نام مشاور:');
   if (!name || !name.trim()) return;
