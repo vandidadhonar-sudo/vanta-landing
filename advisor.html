@@ -630,11 +630,12 @@ function setTk(ids, val, up, dp) {
 }
 function applyPrices(p) {
   if (!p) return;
-  if (p.dollar) { const v = fmtComma(Math.round(p.dollar.p/10)) + ' ت'; setTk(['dollar','dollar2'], v, p.dollar.up, p.dollar.dp); }
-  if (p.gold18) { const v = fmt(p.gold18.p > 1e6 ? Math.round(p.gold18.p/10) : p.gold18.p) + '/گ'; setTk(['gold','gold2'], v, p.gold18.up, p.gold18.dp); }
-  if (p.coin)   { setTk(['coin','coin2'], fmt(Math.round(p.coin.p/10)) + ' ت', p.coin.up, p.coin.dp); }
-  if (p.btc)    { setTk(['btc','btc2'], '$' + Math.round(p.btc.p).toLocaleString(), p.btc.up, p.btc.dp); }
-  if (p.usdt)   { setTk(['usdt','usdt2'], fmtComma(Math.round(p.usdt.p/10)) + ' ت', p.usdt.up, p.usdt.dp); }
+  const NA = '—';
+  if (p.dollar) { const v = p.dollar.p > 0 ? fmtComma(Math.round(p.dollar.p/10)) + ' ت' : NA; setTk(['dollar','dollar2'], v, p.dollar.up, p.dollar.dp); }
+  if (p.gold18) { const v = p.gold18.p > 0 ? fmt(p.gold18.p > 1e6 ? Math.round(p.gold18.p/10) : p.gold18.p) + '/گ' : NA; setTk(['gold','gold2'], v, p.gold18.up, p.gold18.dp); }
+  if (p.coin)   { const v = p.coin.p > 0 ? fmt(Math.round(p.coin.p/10)) + ' ت' : NA; setTk(['coin','coin2'], v, p.coin.up, p.coin.dp); }
+  if (p.btc)    { const v = p.btc.p > 0 ? '$' + Math.round(p.btc.p).toLocaleString() : NA; setTk(['btc','btc2'], v, p.btc.up, p.btc.dp); }
+  if (p.usdt)   { const v = p.usdt.p > 0 ? fmtComma(Math.round(p.usdt.p/10)) + ' ت' : NA; setTk(['usdt','usdt2'], v, p.usdt.up, p.usdt.dp); }
 }
 
 async function loadQuote() {
@@ -658,7 +659,8 @@ function renderHome() {
   }).format(new Date());
   const isSup  = USER.role === 'supervisor';
   const supBtn = isSup
-    ? '<button class="btn-outline" onclick="openBroadcast()" style="border-color:var(--gold);color:var(--gold)">📢 پیام به مشاوران</button>'
+    ? '<button class="btn-outline" onclick="openBroadcast()" style="border-color:var(--gold);color:var(--gold)">📢 پیام به مشاوران</button>' +
+      '<button class="btn-outline" onclick="openRatesForm()" style="border-color:#4A90D9;color:#4A90D9;margin-top:8px">💹 تنظیم نرخ ارز</button>'
     : '';
   document.getElementById('home-content').innerHTML =
     '<div style="padding:20px 16px">' +
@@ -672,8 +674,8 @@ function renderHome() {
     '<div class="stat-card"><div class="stat-n">' + toFa(total) + '</div><div class="stat-l">کل فایل‌ها</div></div>' +
     '</div>' +
     '<div style="display:flex;flex-direction:column;gap:10px">' +
-    '<button class="btn-gold" onclick="showPage(\'pg-myfiles\');loadMyFiles()">📋 فایل‌های من</button>' +
-    '<button class="btn-outline" onclick="showPage(\'pg-allfiles\');loadAllFiles()">🔍 جستجو در فایل‌ها</button>' +
+    '<button class="btn-gold" onclick="showPage(\'myfiles\');loadMyFiles()">📋 فایل‌های من</button>' +
+    '<button class="btn-outline" onclick="showPage(\'allfiles\');loadAllFiles()">🔍 جستجو در فایل‌ها</button>' +
     supBtn +
     '</div></div>';
 }
@@ -1233,6 +1235,30 @@ function leadCard(l) {
       <select class="lead-status-sel" onchange="setLeadStatus(${l.id},this.value)">${statusOpts}</select>
     </div>
   </div>`;
+}
+
+function openRatesForm() {
+  const dollar = prompt('نرخ دلار در تومان (مثال: 104000):');
+  if (!dollar || isNaN(parseInt(dollar))) return;
+  const pRial = parseInt(dollar) * 10;
+  const rates = {
+    dollar: {p: pRial, up: true, dp: '0'},
+    gold18: {p: 0, up: true, dp: '0'},
+    coin:   {p: 0, up: true, dp: '0'},
+    btc:    {p: 0, up: true, dp: '0'},
+    usdt:   {p: 0, up: true, dp: '0'},
+  };
+  fetch(API + API_PATH + '/api/market/rates/update', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+    body: JSON.stringify({rates})
+  }).then(r => r.json()).then(r => {
+    if (r && r.ok) {
+      applyPrices(rates);
+      sessionStorage.removeItem('va_prices');
+      toast('✅ نرخ ذخیره شد');
+    } else toast('❌ ' + (r && r.msg ? r.msg : 'خطا'));
+  }).catch(() => toast('❌ خطای اتصال'));
 }
 
 function openBroadcast() {
