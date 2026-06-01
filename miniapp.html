@@ -342,7 +342,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Vazirmatn',sans-serif;fon
 // Primary source: live catalog from DynamoDB via the filing Lambda API.
 // Set CATALOG_API to your API Gateway/Function URL base (e.g. https://xxxx.execute-api.eu-central-1.amazonaws.com).
 // If empty or unreachable, it transparently falls back to the GitHub raw snapshot below.
-const CATALOG_API = 'https://scqr9aeeac.execute-api.eu-central-1.amazonaws.com';
+const CATALOG_API = 'https://scqr9aeeac.execute-api.eu-central-1.amazonaws.com/filing';
 const FILES_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/files.json';
 const SETTINGS_URL = 'https://raw.githubusercontent.com/vandidadhonar-sudo/vanta-filing-bot/db/data/settings.json';
 const RATES_URL = 'https://call.tgju.org/ajax.json';
