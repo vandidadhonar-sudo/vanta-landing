@@ -910,10 +910,10 @@ function renderFileModal(f) {
 
   let photosHtml = `<div class="photo-grid">`;
   photos.forEach((url,i) => {
-    photosHtml += `<div class="photo-thumb"><img src="${esc(url)}" loading="lazy"><button class="photo-del" onclick="deletePhoto(${f.id},'${esc(url)}')" ${canEdit?'':'style="display:none"'}>✕</button></div>`;
+    photosHtml += `<div class="photo-thumb"><img src="${esc(url)}" loading="lazy"><button class="photo-del" onclick="deletePhoto(${f.property_id||f.id},'${esc(url)}')" ${canEdit?'':'style="display:none"'}>✕</button></div>`;
   });
   if (canEdit && photos.length < limit) {
-    photosHtml += `<label class="upload-btn"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>عکس</span><input type="file" accept="image/*" style="display:none" onchange="uploadPhoto(${f.id},this)"></label>`;
+    photosHtml += `<label class="upload-btn"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>عکس</span><input type="file" accept="image/*" style="display:none" onchange="uploadPhoto(${f.property_id||f.id},this)"></label>`;
   }
   photosHtml += `</div>`;
 
@@ -965,9 +965,9 @@ function renderFileModal(f) {
       </table>
       ${commHtml}
       ${canEdit ? `<div class="fr"><label class="fl">تغییر وضعیت</label>
-        <select class="fs" id="modal-status" onchange="changeFileStatus(${f.id},this.value)">${statusOpts}</select>
+        <select class="fs" id="modal-status" onchange="changeFileStatus(${f.property_id||f.id},this.value)">${statusOpts}</select>
       </div>` : ''}
-      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.id})">📋 متن آگهی دیوار</button>` : ''}
+      ${f.divar_text ? `<button class="btn-outline" onclick="showDivar(${f.property_id||f.id})">📋 متن آگهی دیوار</button>` : ''}
       ${USER.role === 'supervisor' ? `<button class="btn-outline" style="color:var(--red);border-color:var(--red);margin-top:8px" onclick="deleteFile('${f.property_id||f.id}')">🗑 حذف فایل</button>` : ''}
       ${canEdit ? `<details style="margin-top:10px;border:1px solid var(--bd);border-radius:var(--r)">
         <summary style="padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;list-style:none">✏️ ویرایش فایل ▾</summary>
@@ -987,7 +987,7 @@ function renderFileModal(f) {
           ${editRow('تلفن مالک', 'tel', f.tel)}
           ${editRow('نام مالک', 'owner_name', f.owner_name)}
           ${editRow('توضیحات', 'tozih', f.tozih)}
-          <button class="btn-gold" onclick="saveFileEdit(${f.id})" style="margin-top:6px">💾 ذخیره تغییرات</button>
+          <button class="btn-gold" onclick="saveFileEdit(${f.property_id||f.id})" style="margin-top:6px">💾 ذخیره تغییرات</button>
         </div>
       </details>` : ''}
       ${leadsHtml}
@@ -995,7 +995,7 @@ function renderFileModal(f) {
 
   // Store divar text for modal
   window._divarTexts = window._divarTexts || {};
-  window._divarTexts[f.id] = f.divar_text;
+  window._divarTexts[f.property_id||f.id] = f.divar_text;
 }
 
 function showDivar(fid) {
