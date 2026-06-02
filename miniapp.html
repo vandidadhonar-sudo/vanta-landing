@@ -547,12 +547,15 @@ async function loadData() {
         if (cRes.ok) raw = await cRes.json();
       } catch (e) { /* fall through to snapshot */ }
     }
-    const sRes = await fetch(SETTINGS_URL + '?v=' + t5);
+    // Settings from /api/settings (Lambda) — SETTINGS_URL is private repo fallback only
+    try {
+      const sRes2 = await fetch(CATALOG_API.replace(/\/$/, '') + '/api/settings?v=' + t5);
+      if (sRes2.ok) settings = await sRes2.json();
+    } catch (e) { /* settings stays {} */ }
     if (!raw) {
       const fRes = await fetch(FILES_URL + '?v=' + t5);
       raw = await fRes.json();
     }
-    settings = await sRes.json();
     RATE = settings.rahn_rate || settings.rahn_to_ejare || 30;
     mktRef = settings.market_price_ref || {};
     const rl = document.getElementById('rate-lbl');
