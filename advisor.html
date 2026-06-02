@@ -1052,14 +1052,25 @@ async function saveFileEdit(fid) {
 async function uploadPhoto(fid, input) {
   const file = input.files[0];
   if (!file) return;
-  const fd = new FormData();
-  fd.append('photo', file);
+  if (file.size > 5 * 1024 * 1024) { toast('حجم عکس باید کمتر از ۵ مگابایت باشد'); return; }
   toast('در حال آپلود...');
-  const r = await api('/api/advisor/file/'+fid+'/photos', {
-    method: 'POST', body: fd, headers: {'Authorization': 'Bearer ' + TOKEN}
-  });
-  if (r.ok) { toast('عکس آپلود شد ✓'); openFileDetail(fid); }
-  else toast(r.msg || 'خطای آپلود');
+  // Convert to base64 and send as JSON to /api/upload-photo
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const b64 = e.target.result; // data:image/jpeg;base64,...
+    const r = await api('/api/upload-photo', {
+      method: 'POST',
+      body: JSON.stringify({
+        property_id: String(fid),
+        filename: file.name || 'photo.jpg',
+        content_base64: b64,
+        advisor_code: USER.code
+      })
+    });
+    if (r.ok) { toast('عکس آپلود شد ✓'); openFileDetail(fid); }
+    else toast(r.msg || 'خطای آپلود');
+  };
+  reader.readAsDataURL(file);
 }
 
 async function deleteFile(fid) {
